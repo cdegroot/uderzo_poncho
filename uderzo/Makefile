@@ -23,8 +23,6 @@ default: priv compile
 
 setup:
 	sudo apt-get install premake4 gperf libglfw3-dev libgles2-mesa-dev libglew-dev libfreetype6-dev
-	git submodule init
-	git submodule update --remote
 	(cd $(NANOVG_SRC); premake4 gmake)
 
 # TODO non-debug builds for e.g. prod Mix env?
