@@ -75,6 +75,14 @@ and therefore extremely fast.
 Given that all the boring/hard code is generated, it becomes easy to move graphics
 code between Elixir, Clixir, and C so you can pick and choose. 
 
+Clixir documentation for the latest published version of the library starts
+[here](https://hexdocs.pm/uderzo/clixir.html#content).
+
+## Docs
+
+Docs for the latest version of the library can be 
+found [here](https://hexdocs.pm/uderzo/api-reference.html).
+
 ## Demo
 
 `cd uderzo_demo_nerves; mix do deps.get, run`

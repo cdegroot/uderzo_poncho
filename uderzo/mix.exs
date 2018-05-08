@@ -13,6 +13,10 @@ defmodule Uderzo.Mixfile do
       start_permanent: Mix.env == :prod,
       deps: deps(),
       docs: docs(),
+      description: description(),
+      package: package(),
+      name: "Uderzo",
+      source_url: "https://github.com/cdegroot/uderzo_poncho",
       compilers: Mix.compilers ++ [:elixir_make]
     ]
   end
@@ -39,6 +43,24 @@ defmodule Uderzo.Mixfile do
       {:elixir_make, "~> 0.4", runtime: false},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:mix_test_watch, "~> 0.3", only: [:dev, :test]}
+    ]
+  end
+
+  defp description() do
+    "A native UI package for Elixir employing NanoVG/OpenGL ES"
+  end
+
+  defp package() do
+    [
+      # These are the default files included in the package
+      files: [
+        "lib", 
+        "mix.exs", 
+        "README*", 
+        "LICENSE*"],
+      maintainers: ["Cees de Groot"],
+      licenses: ["Apache 2.0"],
+      links: %{"GitHub" => "https://github.com/cdegroot/uderzo_poncho"}
     ]
   end
 end
