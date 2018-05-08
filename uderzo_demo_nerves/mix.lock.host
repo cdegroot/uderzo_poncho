@@ -1,0 +1,6 @@
+%{
+  "distillery": {:hex, :distillery, "1.5.2", "eec18b2d37b55b0bcb670cf2bcf64228ed38ce8b046bb30a9b636a6f5a4c0080", [:mix], [], "hexpm"},
+  "elixir_make": {:hex, :elixir_make, "0.4.1", "6628b86053190a80b9072382bb9756a6c78624f208ec0ff22cb94c8977d80060", [:mix], [], "hexpm"},
+  "nerves": {:hex, :nerves, "1.0.0", "c5b91388fc15661149bfbe8e85fec70b7034f291a484f2b4f10994d20a03d6d1", [:mix], [{:distillery, "~> 1.4", [hex: :distillery, repo: "hexpm", optional: false]}, {:jason, "~> 1.0", [hex: :jason, repo: "hexpm", optional: true]}], "hexpm"},
+  "shoehorn": {:hex, :shoehorn, "0.2.0", "6aa80804145c545c59af01980d255209483b14826f53411b4a8797b24c323c20", [:mix], [{:distillery, "~> 1.0", [hex: :distillery, repo: "hexpm", optional: false]}], "hexpm"},
+}
