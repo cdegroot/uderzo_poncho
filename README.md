@@ -94,19 +94,7 @@ public domain.
 
 ## TODO
 
-* [ ] Make demo look nice on RPi3. Currently it's ugly.
-* [ ] Break down demo by moving rendering code to Elixir/Clixir so we develop some
-      higher order primities like labels, textboxes, etcetera.
-* [ ] Clean up Makefile, building for RPi3, especially around the required libraries
-      at build time (currently just checked into this repo). That is currently a mess.
-* [ ] Clean up the C code a bit, not everything is where it currently belongs.
-* [ ] _Maybe_ figure out how to execute Clixir code and unit test it?
-* [ ] Remove the strlen call (ask me about it, it's silly).
-* [ ] Figure out how to deal transparently with window management on full desktops and
-      "raw" VideoCore; ideally the code would be optimized for the latter case, desktops
-      can afford to do inefficient stuff a bit more. Currently, it's the other way around. 
-* [ ] STB font support didn't work so I pulled in Freetype which makes building more complex.
-      Need to figure out why STB font support didn't work. 
+See https://github.com/cdegroot/uderzo_poncho/projects/1
 
 ## Contributing
 
