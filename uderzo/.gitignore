@@ -4,3 +4,4 @@ priv/
 _build
 deps
 c_src/uderzo.c
+/doc/

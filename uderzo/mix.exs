@@ -12,7 +12,16 @@ defmodule Uderzo.Mixfile do
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps(),
+      docs: docs(),
       compilers: Mix.compilers ++ [:elixir_make]
+    ]
+  end
+
+  def docs do
+    [
+      extras: [
+        "docs/Clixir.md"
+      ]
     ]
   end
 
@@ -28,6 +37,7 @@ defmodule Uderzo.Mixfile do
   defp deps do
     [
       {:elixir_make, "~> 0.4", runtime: false},
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:mix_test_watch, "~> 0.3", only: [:dev, :test]}
     ]
   end
