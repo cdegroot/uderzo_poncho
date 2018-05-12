@@ -3,6 +3,14 @@
 
 # Note: hack alert. I'm not proud of this stuff. Make it work, make it right, make it fast.
 
+ifeq ($(ERL_EI_INCLUDE_DIR),)
+$(error ERL_EI_INCLUDE_DIR not set. Invoke via mix or set it manually)
+endif
+
+# Set Erlang-specific compile and linker flags
+ERL_CFLAGS ?= -I$(ERL_EI_INCLUDE_DIR)
+ERL_LDFLAGS ?= -L$(ERL_EI_LIBDIR)
+
 NANOVG_SRC=c_src/nanovg
 
 HW=$(shell uname -m)
@@ -11,10 +19,8 @@ ifeq ($(MIX_TARGET), rpi3)
 HW=armv7l
 # And use - for now - the bundled erlang and nanovg libs.
 # TODO cleanup this hack.
-ERLANG_PATH=../uderzo_demo_nerves/rpi3_deps
 LIBNANOVG=../uderzo_demo_nerves/rpi3_deps/lib/libnanovg.a
 else
-ERLANG_PATH=$(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(), "/erts-", erlang:system_info(version), "/../usr"])])' -s init stop -noshell)
 LIBNANOVG=$(NANOVG_SRC)/build/libnanovg.a
 endif
 
@@ -49,10 +55,10 @@ endif
 
 priv/uderzo: $(C_DEPS) $(LIBNANOVG)
 	LANG=C $(CC) -g $(CFLAGS) \
-    -I$(NANOVG_SRC)/src -I$(ERLANG_PATH)/include \
+    -I$(NANOVG_SRC)/src $(ERL_CFLAGS) \
 	  $(INCLUDES) \
     -o priv/uderzo c_src/*.c \
     $(LIBNANOVG) -lfreetype -lpng -lz \
-    -L$(ERLANG_PATH)/lib -lerl_interface -lei \
+    $(ERL_LDFLAGS) -lerl_interface -lei \
     $(LDFLAGS)
 

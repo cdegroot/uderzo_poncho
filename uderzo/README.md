@@ -1,6 +1,6 @@
 # Uderzo
 
-Uderzo is an idea at the moment, nothing more. Maybe some code will follow. Needless to
+Uderzo is mostly an idea at the moment, a work in progress. Maybe some code will follow. Needless to
 say, named after the Asterix creator, the half from the genius duo that made the images
 (if I ever write a Elixir-based wordprocessor, it'll be called Goscinny. Promise).
 
@@ -23,7 +23,7 @@ Steps:
 
 # Setup
 
-* Have a bunch of stuff installed. On Debian, you can do `make -f Makefile.linux setup`,
+* Have a bunch of stuff installed. On Debian, you can do `make setup`,
   on other platforms YMMV, check the Makefile for details of what you need.
 * `mix deps.get`
 * `mix compile`
@@ -32,7 +32,8 @@ Steps:
 * `iex -S mix` and run `Uderzo.Demo.run` from there.
 
 Note: I'm doing nothing yet to make this work on non-linux envs, but also nothing to
-make that hard. Nanovg is portable, and the wrapper executable should be minimal.
+make that hard. Nanovg is portable, and the wrapper executable should be minimal. It
+already works on Linux OpenGL under Xorg and Broadcom's VideoCore.
 
 # Protocol
 
