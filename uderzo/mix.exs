@@ -36,31 +36,3 @@ defmodule Uderzo.Mixfile do
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:mix_test_watch, "~> 0.3", only: [:dev, :test]}]
   end
-
-  defp description() do
-    "A native UI package for Elixir employing NanoVG/OpenGL ES"
-  end
-
-  defp make_env() do
-    case System.get_env("ERL_EI_INCLUDE_DIR") do
-      nil ->
-        %{
-          "ERL_EI_INCLUDE_DIR" => "#{:code.root_dir()}/usr/include",
-          "ERL_EI_LIBDIR" => "#{:code.root_dir()}/usr/lib"}
-      _ ->
-        %{}
-    end
-  end
-
-  defp package() do
-    [ # These are the default files included in the package
-      files: [
-        "lib", 
-        "mix.exs", 
-        "README*", 
-        "LICENSE*"],
-      maintainers: ["Cees de Groot"],
-      licenses: ["Apache 2.0"],
-      links: %{"GitHub" => "https://github.com/cdegroot/uderzo_poncho"}]
-  end
-end
