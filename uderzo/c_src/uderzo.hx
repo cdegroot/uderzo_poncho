@@ -8,7 +8,7 @@
  * c) any other stuff you can think off ;-)
  */
 
-// OpenGL ES 2 should support the widest array of devices. 
+// OpenGL ES 2 should support the widest array of devices.
 // When UDERZO_VC is set, we target RaspberryPi's VideoCore.
 #ifdef UDERZO_VC
 #  include <bcm_host.h>
@@ -28,7 +28,6 @@
 #include <nanovg_gl_utils.h>
 
 #include "clixir_support.h"
-#include "nanovg_demo.h"
 
 // Comment-driven development.
 // [x] 1. Library initialization is done at program startup time.
@@ -47,7 +46,7 @@
 //        can batch commands. This is not visible here.
 
 // For now we simply use the state structure from the VC example, whittle away
-// what we don't need. 
+// what we don't need.
 #ifdef UDERZO_VC
 typedef struct
 {
@@ -87,7 +86,6 @@ extern void read_loop();
 
 // These pesky global things, for now.
 NVGcontext* vg = NULL;
-DemoData data;
 //erlang_pid key_callback_pid; // etcetera for all the GLFW callbacks?
 
 int main() {
@@ -118,12 +116,12 @@ int main() {
       EGL_NONE
    };
    static const EGLint context_attributes[] = {
-     EGL_CONTEXT_CLIENT_VERSION, 2, 
+     EGL_CONTEXT_CLIENT_VERSION, 2,
      EGL_NONE
    };
-   
+
    EGLConfig config;
- 
+
    bcm_host_init();
    memset(&state, 0, sizeof(state));
 
@@ -155,19 +153,19 @@ int main() {
    dst_rect.y = 0;
    dst_rect.width = state.screen_width;
    dst_rect.height = state.screen_height;
-      
+
    src_rect.x = 0;
    src_rect.y = 0;
    src_rect.width = state.screen_width << 16;
-   src_rect.height = state.screen_height << 16;        
+   src_rect.height = state.screen_height << 16;
 
    state.dispman_display = vc_dispmanx_display_open(0 /* LCD */);
    dispman_update = vc_dispmanx_update_start(0);
-         
+
    state.dispman_element = vc_dispmanx_element_add (dispman_update, state.dispman_display,
       0/*layer*/, &dst_rect, 0/*src*/,
       &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, 0/*transform*/);
-      
+
    nativewindow.element = state.dispman_element;
    nativewindow.width = state.screen_width;
    nativewindow.height = state.screen_height;
@@ -194,7 +192,6 @@ int main() {
 
    vg = nvgCreateGLES2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
    assert(vg != NULL);
-   loadDemoData(vg, &data);
 
 #else
     if (!glfwInit()) {

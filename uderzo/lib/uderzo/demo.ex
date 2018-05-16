@@ -12,6 +12,7 @@ defmodule Uderzo.Demo do
     glfw_create_window(800, 600, "Uderzo/NanoVG Demo", self())
     receive do
       {:glfw_create_window_result, window} ->
+        tim_init()
         render_loop(window, t_start)
         glfw_destroy_window(window)
       msg ->
@@ -27,8 +28,7 @@ defmodule Uderzo.Demo do
     receive do
       {:uderzo_start_frame_result, mx, my, win_width, win_height} ->
         t = timestamp() - t_start
-        demo_render(mx, my, win_width, win_height, t)
-        draw_eyes(win_width - 250.0, 50.0, 150.0, 100.0, mx, my, t)
+        tim_render(mx, my, win_width, win_height, t)
         uderzo_end_frame(window, self())
         receive do
           :uderzo_end_frame_done ->

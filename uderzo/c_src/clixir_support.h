@@ -31,6 +31,6 @@ extern void clixir_read_loop();
 extern void write_single_atom(const char *atom);
 extern void write_response_tuple2(const char *atom, const char *message);
 extern void write_response_bytes(const char *data, unsigned short len);
-extern void dump_hex(const void* data, size_t size);
+extern void dump_hex(const char prefix, const void* data, size_t size);
 
 #endif

@@ -46,6 +46,7 @@ static void _dispatch_glfw_create_window(const char *buf, unsigned short len, in
     assert(ei_decode_long(buf, index, &width) == 0);
     assert(ei_decode_long(buf, index, &height) == 0);
     assert(ei_decode_binary(buf, index, title, &title_len) == 0);
+    title[title_len] = '\0';
     assert(ei_decode_pid(buf, index, &pid) == 0);
     window = glfwCreateWindow(width, height, title, NULL, NULL);
     if (vg == NULL) {
