@@ -130,7 +130,7 @@ defmodule Uderzo.Clixir do
         "    assert(ei_decode_long(buf, index, &#{name}) == 0);"
       {name, :"char *"} ->
         "    assert(ei_decode_binary(buf, index, #{name}, &#{name}_len) == 0);\n" <>
-        "    #{name}[#{name}_len] = '\0';"
+        "    #{name}[#{name}_len] = '\\0';"
       {name, :erlang_pid} ->
         "    assert(ei_decode_pid(buf, index, &#{name}) == 0);"
       {name, type} ->
