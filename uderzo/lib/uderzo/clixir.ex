@@ -8,8 +8,8 @@ defmodule Uderzo.Clixir do
     quote do
       import Uderzo.Clixir
 
-      Module.register_attribute(__MODULE__, :cfuns, accumulate: true)
-      @before_compile Uderzo.Clixir
+      Module.register_attribute(__MODULE__, :cfuns, accumulate: true, persist: true)
+      Module.register_attribute(__MODULE__, :clixir_target, persist: true)
     end
   end
 
@@ -26,7 +26,7 @@ defmodule Uderzo.Clixir do
   end
 
   # TODO only do this when needed (compare timestamps,etc)
-  defmacro __before_compile__(env) do
+  def compile_stuff(env) do
     tmpfile = fn -> "/tmp/clixir-temp-#{node()}-#{:erlang.unique_integer}" end
     target = Module.get_attribute(env.module, :clixir_target)
     if is_nil(target) do

@@ -17,7 +17,8 @@ defmodule Uderzo.Mixfile do
       name: "Uderzo",
       source_url: "https://github.com/cdegroot/uderzo_poncho",
       make_env: make_env(),
-      compilers: Mix.compilers ++ [:elixir_make]]
+      compilers: Mix.compilers # ++ [:elixir_make]
+    ]
   end
 
   def docs do
@@ -55,9 +56,9 @@ defmodule Uderzo.Mixfile do
   defp package() do
     [ # These are the default files included in the package
       files: [
-        "lib", 
-        "mix.exs", 
-        "README*", 
+        "lib",
+        "mix.exs",
+        "README*",
         "LICENSE*"],
       maintainers: ["Cees de Groot"],
       licenses: ["Apache 2.0"],
