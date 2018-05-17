@@ -14,6 +14,7 @@ deps:
 	for i in $(APPS); do cd $$i; mix deps.get; done
 
 setup:
+	asdf install
 	mix local.hex --if-missing --force
 	mix local.rebar --if-missing --force
 	yes | mix archive.install hex nerves_bootstrap

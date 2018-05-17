@@ -2,6 +2,7 @@ defmodule Uderzo.GraphicsServerTest do
   use ExUnit.Case, async: true
 
   import Uderzo.Bindings
+  import Uderzo.Thermostat
 
   test "Bindings work for a basic demo" do
     glfw_create_window(640, 480, "Another demo window", self())
