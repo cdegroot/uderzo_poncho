@@ -1,10 +1,10 @@
-defmodule Uderzo.ClixirTest do
+defmodule ClixirTest do
   use ExUnit.Case, async: true
 
-  import Uderzo.Clixir
+  import Clixir
 
   # Example invocation. This should compile.
-  defgfx glfw_get_cursor_pos(window, pid) do
+  def_c glfw_get_cursor_pos(window, pid) do
     cdecl "GLFWwindow *": window
     cdecl erlang_pid: pid
     cdecl double: [mx, my]

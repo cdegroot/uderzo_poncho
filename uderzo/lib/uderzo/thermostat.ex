@@ -2,7 +2,7 @@ defmodule Uderzo.Thermostat do
   @moduledoc """
   A basic thermostat display, mostly fake, to show off Uderzo
   """
-  use Uderzo.Clixir
+  use Clixir
   @clixir_target "c_src/thermostat"
 
   # A sample thermostat display.

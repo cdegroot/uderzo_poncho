@@ -2,16 +2,17 @@
 # have to test in the "libraries", the
 # top level compiles everything anyway.
 
-APPS = uderzo_demo_nerves
+APPS = clixir uderzo uderzo_demo_nerves
 
-all:
+# By default, do everything to make the app run.
+all: setup deps
 	cd uderzo_demo_nerves; mix do deps.get, compile
 
 test: deps
-	for i in $(APPS); do cd $$i; mix test --no-start; done
+	for i in $(APPS); do cd $$i; mix test --no-start; cd ..; done
 
 deps:
-	for i in $(APPS); do cd $$i; mix deps.get; done
+	for i in $(APPS); do cd $$i; mix deps.get; cd ..; done
 
 setup:
 	asdf install

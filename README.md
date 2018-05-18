@@ -10,6 +10,12 @@ demo (burn it, boot it, and watch graphics animations).  Everything is
 rough around the edges, but the end-to-end system is there and making
 it nicer is pretty much a downhill run.
 
+## Getting started
+
+There's a bunch of projects in here and some of them need quite a lot
+of dependencies installed. Start at this directory's `Makefile` for
+a roadmap.
+
 ## Why?
 
 Today, all your UIs are Web. I think html/javascript/css is not a very
@@ -56,31 +62,31 @@ everything is meant to be asynchronous - again, this is closest to how
 things are supposed to work on the BEAM.
 
 Essentially, that's it. You have a C executable that initializes OpenGL
-and NanoVG, then reads a command (using the `ei` library), executes it, 
-and optionally sends a response back. 
+and NanoVG, then reads a command (using the `ei` library), executes it,
+and optionally sends a response back.
 
 ## Clixir
 
 However, that smells like typing a lot of repetitive code. Therefore, the
 "glue" code is written in an Elixir subset/dialect that's dubbed Clixir. It's
 the magic sauce that makes extending and adapting Uderzo fun. A (graphics) function
-in Clixir is specified with `defgfx` (the name will likely change, as Clixir is 
+in Clixir is specified with `defgfx` (the name will likely change, as Clixir is
 applicable as a generic safe FFI mechanism). You can find examples in the uderzo
 README. A Clixir function will expand into an Elixir function definition with the right
-arguments that calls out to the GraphicsServer and a C function that has the body of 
-the function in equivalent C code wrapped in the code to demarshall arguments and 
+arguments that calls out to the GraphicsServer and a C function that has the body of
+the function in equivalent C code wrapped in the code to demarshall arguments and
 marshall any responses. Function dispatch is through a `gperf` generated hashtable
 and therefore extremely fast.
 
 Given that all the boring/hard code is generated, it becomes easy to move graphics
-code between Elixir, Clixir, and C so you can pick and choose. 
+code between Elixir, Clixir, and C so you can pick and choose.
 
 Clixir documentation for the latest published version of the library starts
 [here](https://hexdocs.pm/uderzo/clixir.html#content).
 
 ## Docs
 
-Docs for the latest version of the library can be 
+Docs for the latest version of the library can be
 found [here](https://hexdocs.pm/uderzo/api-reference.html).
 
 ## Demo
@@ -88,8 +94,8 @@ found [here](https://hexdocs.pm/uderzo/api-reference.html).
 `cd uderzo_demo_nerves; mix do deps.get, run`
 
 should pop up the NanoVG demo. If you burn the Nerves firmware, it should pop up a
-(currently worse looking) demo on a Pi3. Note that currently, only Linux has been 
-tested but it should work on MacOS and Windows with little adaptation. 
+(currently worse looking) demo on a Pi3. Note that currently, only Linux has been
+tested but it should work on MacOS and Windows with little adaptation.
 
 ## License
 
@@ -106,4 +112,4 @@ See https://github.com/cdegroot/uderzo_poncho/projects/1
 
 ## Contributing
 
-Submit a pull request, an issue, or hit me up on Slack. 
+Submit a pull request, an issue, or hit me up on Slack.
