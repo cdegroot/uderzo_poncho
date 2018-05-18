@@ -1,10 +1,10 @@
-defmodule Uderzo.ClixirTest do
+defmodule ClixirTest do
   use ExUnit.Case, async: true
 
-  import Uderzo.Clixir
+  import Clixir
 
   # Example invocation. This should compile.
-  defgfx glfw_get_cursor_pos(window, pid) do
+  def_c glfw_get_cursor_pos(window, pid) do
     cdecl "GLFWwindow *": window
     cdecl erlang_pid: pid
     cdecl double: [mx, my]
@@ -31,11 +31,11 @@ defmodule Uderzo.ClixirTest do
     end
     {:__block__, _, exprs} = ast
 
-    {hdr, c_string} = make_c(:glfw_create_window, [:width, :height, :title, :pid], exprs)
+    {hdr, c_string} = make_c(ClixirTest, :glfw_create_window, [:width, :height, :title, :pid], exprs)
 
-    assert hdr == "// Generated code for glfw_create_window do not edit!"
+    assert hdr == "// Generated code for glfw_create_window from Elixir.ClixirTest\n"
     assert c_string == """
-static void _dispatch_glfw_create_window(const char *buf, unsigned short len, int *index) {
+static void _dispatch_Elixir_ClixirTest_glfw_create_window(const char *buf, unsigned short len, int *index) {
     long height;
     long length;
     erlang_pid pid;
@@ -46,7 +46,7 @@ static void _dispatch_glfw_create_window(const char *buf, unsigned short len, in
     assert(ei_decode_long(buf, index, &width) == 0);
     assert(ei_decode_long(buf, index, &height) == 0);
     assert(ei_decode_binary(buf, index, title, &title_len) == 0);
-    title[title_len] = '\0';
+    title[title_len] = '\\0';
     assert(ei_decode_pid(buf, index, &pid) == 0);
     window = glfwCreateWindow(width, height, title, NULL, NULL);
     if (vg == NULL) {

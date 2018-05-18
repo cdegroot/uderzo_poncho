@@ -5,13 +5,19 @@ defmodule Uderzo.Bindings do
   methods, demo methods; there's nothing however that precludes
   a clean separation. Yet ;-)
   """
-  use Uderzo.Clixir
+  use Clixir
 
-  @clixir_target "c_src/uderzo"
+  @clixir_header "uderzo"
 
-  defgfx comment(comment) do
-    cdecl "char *": comment
-    fprintf(stderr, "Got comment [%s]", comment)
+  @doc """
+  Initialize Uderzo. Calling this is mandatory.
+  """
+  def_c uderzo_init(pid) do
+    cdecl erlang_pid: pid
+
+    uderzo_init()
+
+    {pid, :uderzo_initialized}
   end
 
   if :erlang.system_info(:system_architecture) == 'armv7l-unknown-linux-gnueabihf' or
@@ -19,7 +25,7 @@ defmodule Uderzo.Bindings do
     IO.puts "Compiling for RaspberryPi!"
 
     # Fake GLFW code ;-)
-    defgfx glfw_create_window(width, height, title, pid) do
+    def_c glfw_create_window(width, height, title, pid) do
       cdecl "char *": title
       cdecl long: [length, width, height]
       cdecl erlang_pid: pid
@@ -27,7 +33,7 @@ defmodule Uderzo.Bindings do
       {pid, {:glfw_create_window_result, 42}}
     end
 
-    defgfx glfw_destroy_window(window) do
+    def_c glfw_destroy_window(window) do
       cdecl long: window  # fake handle, ignore
       assert(window == 42)
     end
@@ -36,7 +42,7 @@ defmodule Uderzo.Bindings do
     # but for ease of development we stay compatible with variable-sized windows
     # for now. Later on we need to feed the result of the VideoCore screen size
     # into this thing.
-    defgfx uderzo_start_frame(window, pid) do
+    def_c uderzo_start_frame(window, pid) do
       cdecl long: window # Fake window
       cdecl erlang_pid: pid
       cdecl int: [winWidth, winHeight, fbWidth, fbHeight]
@@ -59,7 +65,7 @@ defmodule Uderzo.Bindings do
       {pid, {:uderzo_start_frame_result, 0.0, 0.0, 1920.0, 1080.0}}
     end
 
-    defgfx uderzo_end_frame(window, pid) do
+    def_c uderzo_end_frame(window, pid) do
       cdecl long: window  # fake handle, ignore
       cdecl erlang_pid: pid
 
@@ -72,7 +78,7 @@ defmodule Uderzo.Bindings do
 
     # GLFW code
 
-    defgfx glfw_create_window(width, height, title, pid) do
+    def_c glfw_create_window(width, height, title, pid) do
       cdecl "char *": title
       cdecl long: [length, width, height]
       cdecl erlang_pid: pid
@@ -96,7 +102,7 @@ defmodule Uderzo.Bindings do
       end
     end
 
-    defgfx glfw_destroy_window(window) do
+    def_c glfw_destroy_window(window) do
       cdecl "GLFWwindow *": window
       glfwDestroyWindow(window)
     end
@@ -114,7 +120,7 @@ defmodule Uderzo.Bindings do
     this message and then send the rest of the frame drawing
     commands.
     """
-    defgfx uderzo_start_frame(window, pid) do
+    def_c uderzo_start_frame(window, pid) do
       cdecl "GLFWwindow *": window
       cdecl erlang_pid: pid
       cdecl int: [winWidth, winHeight, fbWidth, fbHeight]
@@ -150,7 +156,7 @@ defmodule Uderzo.Bindings do
     does some housekeeping and eventually a buffer swap to
     display the frame.
     """
-    defgfx uderzo_end_frame(window, pid) do
+    def_c uderzo_end_frame(window, pid) do
       cdecl "GLFWwindow *": window
       cdecl erlang_pid: pid
 
@@ -162,71 +168,6 @@ defmodule Uderzo.Bindings do
 
       {pid, :uderzo_end_frame_done}
     end
-  end
-
-  # A sample thermostat display.
-  def temp(t) do
-    # Fake the temperature
-    25 * :math.sin(t / 10)
-  end
-
-  def tim_init() do
-    base_dir = Application.app_dir(:uderzo, ".")
-    priv_dir = Path.absname("priv", base_dir)
-
-    create_font("sans", Path.join(priv_dir, "SourceCodePro-Regular.ttf"))
-  end
-
-  defgfx create_font(name, file_name) do
-    cdecl "char *": [name, file_name]
-    cdecl int: retval
-
-    assert(nvgCreateFont(vg, name, file_name) >= 0)
-  end
-
-  def tim_render(mouse_x, mouse_y, win_width, win_height, t) do
-    inside = temp(t)
-    outside = temp(t - 10)
-    burn = inside < outside
-    draw_inside_temp(inside, win_width, win_height)
-    draw_outside_temp(outside, win_width, win_height)
-    draw_burn_indicator(burn, win_width, win_height)
-  end
-
-  defp left_align(x), do: 0.1 * x
-  defp display_temp(t), do: "#{:erlang.float_to_binary(t, [decimals: 1])}°C"
-
-  def draw_inside_temp(temp, w, h) do
-    left_align = left_align(w)
-    draw_small_text("Inside temp", left_align, 0.1 * h)
-    draw_big_text(display_temp(temp), left_align, 0.14 * h)
-  end
-  def draw_outside_temp(temp, w, h) do
-    left_align = left_align(w)
-    draw_small_text("Outside temp", left_align, 0.3 * h)
-    draw_big_text(display_temp(temp), left_align, 0.34 * h)
-  end
-  def draw_burn_indicator(burn = true, w, h), do: show_flame(w, h)
-  def draw_burn_indicator(burn = false, w, h), do: nil
-
-  def draw_small_text(t, x, y), do: draw_text(t, String.length(t), 16.0, x, y)
-  def draw_big_text(t, x, y), do: draw_text(t, String.length(t), 40.0, x, y)
-
-  defgfx show_flame(w, h) do
-    cdecl double: [w, h]
-    fprintf(stderr, "Here is where we draw a flame..;")
-  end
-
-  defgfx draw_text(t, tl, sz, x, y) do
-    cdecl "char *": t
-    cdecl long: tl
-    cdecl double: [sz, x, y]
-
-    nvgFontSize(vg, sz)
-    nvgFontFace(vg, "sans")
-    nvgTextAlign(vg, NVG_ALIGN_LEFT|NVG_ALIGN_TOP)
-    nvgFillColor(vg, nvgRGBA(255, 255, 255, 255))
-    nvgText(vg, x, y, t, t + tl)
   end
 end
 

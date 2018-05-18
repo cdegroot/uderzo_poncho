@@ -17,7 +17,8 @@ defmodule Uderzo.Mixfile do
       name: "Uderzo",
       source_url: "https://github.com/cdegroot/uderzo_poncho",
       make_env: make_env(),
-      compilers: Mix.compilers ++ [:elixir_make]]
+      compilers: Mix.compilers ++ [:clixir, :elixir_make]
+    ]
   end
 
   def docs do
@@ -26,13 +27,13 @@ defmodule Uderzo.Mixfile do
   end
 
   def application do
-    [ mod: {Uderzo, []},
-      extra_applications: [:logger]]
+    [extra_applications: [:logger]]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [ {:elixir_make, "~> 0.4", runtime: false},
+      {:clixir, path: "../clixir"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:mix_test_watch, "~> 0.3", only: [:dev, :test]}]
   end
@@ -46,7 +47,8 @@ defmodule Uderzo.Mixfile do
       nil ->
         %{
           "ERL_EI_INCLUDE_DIR" => "#{:code.root_dir()}/usr/include",
-          "ERL_EI_LIBDIR" => "#{:code.root_dir()}/usr/lib"}
+          "ERL_EI_LIBDIR" => "#{:code.root_dir()}/usr/lib",
+          "MIX_ENV" => "#{Mix.env}"}
       _ ->
         %{}
     end
@@ -55,9 +57,9 @@ defmodule Uderzo.Mixfile do
   defp package() do
     [ # These are the default files included in the package
       files: [
-        "lib", 
-        "mix.exs", 
-        "README*", 
+        "lib",
+        "mix.exs",
+        "README*",
         "LICENSE*"],
       maintainers: ["Cees de Groot"],
       licenses: ["Apache 2.0"],

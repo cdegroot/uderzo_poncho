@@ -1,6 +1,7 @@
-defmodule Uderzo.GraphicsServer do
+defmodule Clixir.Server do
   @moduledoc """
-  This wraps the `uderzo` executable and makes it accessible.
+  This wraps the `clixir` executable and makes it accessible. For now, we hardcode the executable
+  and generate one massive one until there's a use case to change this ;-)
   """
   use GenServer
   require Logger
@@ -27,14 +28,16 @@ defmodule Uderzo.GraphicsServer do
   ## Callbacks
 
   def init([]) do
-    Logger.info("Starting uderzo process")
-    uderzo_bin = Application.app_dir(:uderzo, "priv/uderzo")
-    port = Port.open({:spawn, uderzo_bin},
+    app = Application.get_env(:clixir, :application)
+    Logger.info("Starting clixir process from application #{app}")
+    clixir_bin = Application.app_dir(app, "priv/clixir")
+    port = Port.open({:spawn, clixir_bin},
       [{:packet, 2}, :binary, :exit_status])
     {:ok, %State{port: port}}
   end
 
   def handle_cast({:send, command}, state) do
+    Logger.debug("sending message #{inspect command}")
     bytes = :erlang.term_to_binary(command)
     Port.command(state.port, bytes)
     {:noreply, state}
@@ -45,10 +48,10 @@ defmodule Uderzo.GraphicsServer do
     {:noreply, state}
   end
 
-  # Uderzo died, we die. Supervisor will fix stuff.
+  # Clixir died, we die. Supervisor will fix stuff.
   def handle_info({_port, {:exit_status, status}}, state) do
-    Logger.error("uderzo bailed out with #{status}, exiting")
-    {:stop, "uderzo exited with #{status}", state}
+    Logger.error("clixir bailed out with #{status}, exiting")
+    {:stop, "clixir exited with #{status}", state}
   end
 
   def handle_info({_port, {:data, data}}, state) do

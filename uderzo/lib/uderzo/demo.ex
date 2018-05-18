@@ -5,6 +5,7 @@ defmodule Uderzo.Demo do
   as `renderDemo` is hardly low level, but it sort of shows the principle.
   """
   import Uderzo.Bindings
+  import Uderzo.Thermostat
   require Logger
 
   def run do

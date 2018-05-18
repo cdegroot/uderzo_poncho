@@ -18,19 +18,11 @@
 // stacks, which speeds things up and saves us from memory leaks.
 #define BUF_SIZE 65536
 
-// Send back a single OK atom
-#define SEND_ERLANG_OK     write_single_atom("ok")
-// Send back an error tuple
-#define SEND_ERLANG_ERR(x) write_response_tuple2("error", x)
-
-// The main read loop for clixir. Will read from stdin and
-// dispatch commands to the generated code.
-extern void clixir_read_loop();
-
-// Utility functions to send data back to the BEAM VM.
-extern void write_single_atom(const char *atom);
-extern void write_response_tuple2(const char *atom, const char *message);
+/** Write response bytes. Used in generated code */
 extern void write_response_bytes(const char *data, unsigned short len);
+
+/** Does a hexdump of data on stderr. Note that everything needs to be compiled
+    with CLIXIR_PROTOCOL_DUMP defined */
 extern void dump_hex(const char prefix, const void* data, size_t size);
 
 #endif

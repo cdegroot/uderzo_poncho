@@ -7,78 +7,7 @@
  * b) a main method
  * c) any other stuff you can think off ;-)
  */
-
-// OpenGL ES 2 should support the widest array of devices.
-// When UDERZO_VC is set, we target RaspberryPi's VideoCore.
-#ifdef UDERZO_VC
-#  include <bcm_host.h>
-#  include <GLES2/gl2.h>
-#  include <GLES2/gl2ext.h>
-#  include <EGL/egl.h>
-#  include <EGL/eglext.h>
-#else
-#  define GLFW_INCLUDE_ES2
-#  define GLFW_INCLUDE_GLEXT
-#  include <GLFW/glfw3.h>
-#endif
-
-#include <nanovg.h>
-#define NANOVG_GLES2_IMPLEMENTATION
-#include <nanovg_gl.h>
-#include <nanovg_gl_utils.h>
-
-#include "clixir_support.h"
-
-// Comment-driven development.
-// [x] 1. Library initialization is done at program startup time.
-// [x] 1a.For now, there's one global (vg/gl) context.
-// [x] 2. Everything else is manual.
-// [x] 3. For now, we openly admit to using nanovg, glfw, opengl es
-// [x] 3a.So we directly map functions on the protocol, no translation
-// [x] 3b.This should make code generation simpler, eventually
-// [x] 3c.We also don't wrap pointers. They're just opaque handles on
-//        the BEAM side.
-// [x] 4. The render loop is BEAM-side, this code is passive
-// [ ] 5. Any GLFW keyboard and mouse events are sent to stdout, async
-// [ ] 6. Hence, the stdin/stdout protocol needs to be async
-// [ ] 7. Mouse state can also be polled
-// [ ] 8. BEAM-side, there should be a concept of flushing so that we
-//        can batch commands. This is not visible here.
-
-// For now we simply use the state structure from the VC example, whittle away
-// what we don't need.
-#ifdef UDERZO_VC
-typedef struct
-{
-   uint32_t screen_width;
-   uint32_t screen_height;
-// OpenGL|ES objects
-   DISPMANX_DISPLAY_HANDLE_T dispman_display;
-   DISPMANX_ELEMENT_HANDLE_T dispman_element;
-   EGLDisplay display;
-   EGLSurface surface;
-   EGLContext context;
-   GLuint tex[6];
-// model rotation vector and direction
-   GLfloat rot_angle_x_inc;
-   GLfloat rot_angle_y_inc;
-   GLfloat rot_angle_z_inc;
-// current model rotation angles
-   GLfloat rot_angle_x;
-   GLfloat rot_angle_y;
-   GLfloat rot_angle_z;
-// current distance from camera
-   GLfloat distance;
-   GLfloat distance_inc;
-// pointers to texture buffers
-   char *tex_buf1;
-   char *tex_buf2;
-   char *tex_buf3;
-} CUBE_STATE_T;
-
-// Define one global. "One display should be enough for everybody" - Bill G.
-CUBE_STATE_T state;
-#endif
+#include "uderzo_support.h"
 
 extern void errorcb(int error, const char *desc);
 //extern void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
@@ -88,7 +17,7 @@ extern void read_loop();
 NVGcontext* vg = NULL;
 //erlang_pid key_callback_pid; // etcetera for all the GLFW callbacks?
 
-int main() {
+int uderzo_init() {
   //char name[256];
   //snprintf(name, 256, "/tmp/mtrace.%d", getpid());
   //setenv("MALLOC_TRACE", name, 1);
@@ -195,7 +124,7 @@ int main() {
 
 #else
     if (!glfwInit()) {
-        SEND_ERLANG_ERR("Failed to init GLFW.");
+        fprintf(stderr, "Uderzo: Failed to init GLFW.");
         return -1;
     }
 
@@ -203,11 +132,9 @@ int main() {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
+    fprintf(stderr, "Uderzo executable initialized.");
 #endif
-
-    fprintf(stderr, "Uderzo graphics executable started up.\n");
-
-    clixir_read_loop();
 }
 
 void errorcb(int error, const char *desc) {

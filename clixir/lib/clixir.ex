@@ -1,4 +1,4 @@
-defmodule Uderzo.Clixir do
+defmodule Clixir do
   @moduledoc """
   Code to emit Elixir and C code from a single "clixir" (.cx)
   file.
@@ -6,44 +6,67 @@ defmodule Uderzo.Clixir do
 
   defmacro __using__(_opts) do
     quote do
-      import Uderzo.Clixir
+      import Clixir
 
       Module.register_attribute(__MODULE__, :cfuns, accumulate: true)
-      @before_compile Uderzo.Clixir
+      @before_compile Clixir
     end
   end
 
-  defmacro defgfx(clause, do: expression) do
+  defmacro def_c(clause, do: expression) do
     {function_name, _, parameter_ast} = clause
     parameter_list = Enum.map(parameter_ast, fn({p, _, _}) -> p end)
     {_block, _, exprs} = expression
-    c_code = make_c(function_name, parameter_list, exprs)
-    e_code = make_e(function_name, parameter_ast, exprs)
+    module = __CALLER__.module
+    location = {__CALLER__.file, __CALLER__.line}
+    c_code = make_c(module, function_name, parameter_list, exprs, location)
+    e_code = make_e(module, function_name, parameter_ast, exprs)
+    cfun_name = cfun_name(module, function_name)
     quote do
-      @cfuns {unquote(function_name), unquote(c_code)}
+      @cfuns {unquote(cfun_name), unquote(c_code)}
       unquote(e_code)
     end
   end
 
   # TODO only do this when needed (compare timestamps,etc)
   defmacro __before_compile__(env) do
-    tmpfile = fn -> "/tmp/clixir-temp-#{node()}-#{:erlang.unique_integer}" end
-    target = Module.get_attribute(env.module, :clixir_target)
-    if is_nil(target) do
-      raise "Please set the @clixir_target attribute on #{env.module}."
-    end
-    {:ok, header} = File.read(target <> ".hx")
+    require Logger
+
+    clixir_dir = Path.join(Mix.Project.build_path(), "clixir")
+    :ok = File.mkdir_p(clixir_dir)
+
+    # Write C file
+    target = Path.join(clixir_dir, Atom.to_string(env.module))
     {:ok, target_file} = File.open(target <> ".c", [:write])
-    IO.write(target_file, "#line 1 \"#{target}.hx\"")
-    IO.write(target_file, header)
+
+    header_name = Module.get_attribute(env.module, :clixir_header)
+    if is_nil(header_name) do
+      Logger.warn("No @clixir_header specified in #{env.module}")
+      ""
+    else
+      header_file = Path.join("c_src", header_name <> ".hx")
+      header = File.read!(header_file)
+      IO.write(target_file, "#line 1 \"#{header_file}\"\n")
+      IO.write(target_file, header)
+    end
     IO.puts(target_file, "\n\n// END OF HEADER\n\n")
     cfuns = Module.get_attribute(env.module, :cfuns)
-    # TODO keep line number information from Elixir code?
-    IO.write(target_file, "#line 1 \"#{env.module}\"")
     Enum.map(cfuns, fn {_fun, {hdr, body}} ->
       IO.puts(target_file, hdr)
       IO.puts(target_file, body)
     end)
+    File.close(target_file)
+
+    # Dump data for gperf
+    {:ok, target_file} = File.open(target <> ".gperf", [:write])
+    Enum.map(cfuns, fn {fun, _} -> IO.puts target_file, "#{fun}, _dispatch_#{fun}" end)
+    File.close(target_file)
+  end
+
+  if false do
+  def gen_perf do
+    # TODO Invoke this at the end of compiling everything
+    # TOOD Generate makefile.
     gperf_file = tmpfile.() <> ".gperf"
     {:ok, gperf_data} = File.open(gperf_file, [:write])
     IO.write gperf_data, """
@@ -76,14 +99,16 @@ defmodule Uderzo.Clixir do
     """
     File.close(target_file)
   end
+  end
 
   # C code stuff starts here
 
-  def make_c(function_name, parameter_list, exprs) do
-    {:ok, iobuf} = StringIO.open("// Generated code for #{function_name} do not edit!")
+  def make_c(module, function_name, parameter_list, exprs, {file, line}) do
+    {:ok, iobuf} = StringIO.open("// Generated code for #{function_name} from #{Atom.to_string(module)}\n")
     cdecls = cdecls(exprs)
     non_decls = non_decls(exprs)
-    start_c_fun(iobuf, function_name)
+    IO.write(iobuf, "#line #{line} \"#{file}\"\n")
+    start_c_fun(iobuf, module, function_name)
     emit_c_local_vars(iobuf, cdecls)
     emit_c_unmarshalling(iobuf, parameter_list, cdecls)
     emit_c_body(iobuf, cdecls, non_decls)
@@ -108,8 +133,8 @@ defmodule Uderzo.Clixir do
     exprs
     |> Enum.filter(fn maybe_decl -> elem(maybe_decl, 0) != :cdecl end)
   end
-  defp start_c_fun(iobuf, function_name) do
-    IO.puts(iobuf, "static void _dispatch_#{function_name}(const char *buf, unsigned short len, int *index) {")
+  defp start_c_fun(iobuf, module, function_name) do
+    IO.puts(iobuf, "static void _dispatch_#{cfun_name(module, function_name)}(const char *buf, unsigned short len, int *index) {")
   end
   defp emit_c_local_vars(iobuf, cdecls) do
     cdecls
@@ -124,13 +149,13 @@ defmodule Uderzo.Clixir do
     |> Enum.map(fn(p) -> {p, cdecls[p]} end)
     |> Enum.map(fn
       # Fairly manual list, we can clean this up later when we have a better overview of regularities
-      {name, :double} ->
+    {name, :double} ->
         "    assert(ei_decode_double(buf, index, &#{name}) == 0);"
       {name, :long} ->
         "    assert(ei_decode_long(buf, index, &#{name}) == 0);"
       {name, :"char *"} ->
         "    assert(ei_decode_binary(buf, index, #{name}, &#{name}_len) == 0);\n" <>
-        "    #{name}[#{name}_len] = '\0';"
+        "    #{name}[#{name}_len] = '\\0';"
       {name, :erlang_pid} ->
         "    assert(ei_decode_pid(buf, index, &#{name}) == 0);"
       {name, type} ->
@@ -214,7 +239,7 @@ defmodule Uderzo.Clixir do
       number when is_integer(number) or is_float(number) -> to_string(number)
       {oper, _, [lhs, rhs]} -> "#{to_c_var(lhs)} #{to_string(oper)} #{to_c_var(rhs)}"
       constant_string when is_binary(constant_string) ->
-        String.replace("\"#{constant_string}\"", "\n", "\\n")
+        "\"#{constant_string}\"" |> String.replace("\n", "\\n")
       {{:., _, [{var, _, nil}, struct_elem]}, _, []} -> "#{var}.#{struct_elem}"
       {funcall, _, args} ->
         cargs = args
@@ -278,12 +303,22 @@ defmodule Uderzo.Clixir do
     IO.puts(iobuf, "}")
   end
 
+  defp cfun_name(module, function_name) do
+    module_s = module
+    |> Atom.to_string()
+    |> String.replace(".", "_")
+    function_s = function_name
+    |> Atom.to_string()
+    Enum.join([module_s, function_s], "_")
+  end
+
   # Elixir code stuff starts here
 
-  def make_e(function_name, parameter_list, _exprs) do
+  def make_e(module, function_name, parameter_list, _exprs) do
+    cfun_name = cfun_name(module, function_name) |> String.to_atom
     quote do
       def unquote(function_name)(unquote_splicing(parameter_list)) do
-        Uderzo.GraphicsServer.send_command(Uderzo.GraphicsServer, {unquote(function_name), unquote_splicing(parameter_list)})
+        Clixir.Server.send_command(Clixir.Server, {unquote(cfun_name), unquote_splicing(parameter_list)})
       end
     end
   end
