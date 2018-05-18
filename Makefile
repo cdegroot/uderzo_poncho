@@ -18,7 +18,7 @@ deps:
 	set -e; for i in $(APPS); do cd $$i; mix deps.get; cd ..; done
 
 setup:
-  set -e
+	set -e
 	asdf install
 	mix local.hex --if-missing --force
 	mix local.rebar --if-missing --force

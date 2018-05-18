@@ -3,7 +3,7 @@ defmodule Uderzo.Mixfile do
 
   def project do
     [ app: :uderzo,
-      version: "0.1.0",
+      version: version(),
       build_path: "_build",
       config_path: "config/config.exs",
       deps_path: "deps",
@@ -21,9 +21,11 @@ defmodule Uderzo.Mixfile do
     ]
   end
 
+  def version, do: "0.2.0"
+
   def docs do
     [ extras: [
-        "docs/Clixir.md"]]
+        ]]
   end
 
   def application do
@@ -32,10 +34,14 @@ defmodule Uderzo.Mixfile do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-    [{:clixir, path: "../clixir"},
-      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
-      {:mix_test_watch, "~> 0.3", only: [:dev, :test]}]
+
+    [clixir_dep(Mix.env),
+     {:ex_doc, "~> 0.16", runtime: false},
+     {:mix_test_watch, "~> 0.3", only: [:dev, :test]}]
   end
+
+  def clixir_dep(:prod), do: {:clixir, "~> #{version()}"}
+  def clixir_dep(_), do: {:clixir, path: "../clixir"}
 
   defp description() do
     "A native UI package for Elixir employing NanoVG/OpenGL ES"
@@ -57,6 +63,8 @@ defmodule Uderzo.Mixfile do
     [ # These are the default files included in the package
       files: [
         "lib",
+        "c_src",
+        "priv/*.ttf",
         "mix.exs",
         "README*",
         "LICENSE*"],

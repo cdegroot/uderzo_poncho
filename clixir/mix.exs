@@ -4,7 +4,7 @@ defmodule Clixir.MixProject do
   def project do
     [
       app: :clixir,
-      version: "0.1.0",
+      version: "0.2.0",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -27,6 +27,7 @@ defmodule Clixir.MixProject do
 
   defp deps do
     [{:mix_test_watch, "~> 0.3", only: [:dev, :test]},
+     {:ex_doc, "~> 0.16", only: :dev, runtime: false},
      {:elixir_make, "~> 0.4", runtime: false}]
   end
 
@@ -52,6 +53,8 @@ defmodule Clixir.MixProject do
     [ # These are the default files included in the package
       files: [
         "lib",
+        "c_src",
+        "Makefile",
         "mix.exs",
         "README*",
         "LICENSE*"],
