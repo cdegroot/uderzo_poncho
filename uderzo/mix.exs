@@ -32,8 +32,7 @@ defmodule Uderzo.Mixfile do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-    [ {:elixir_make, "~> 0.4", runtime: false},
-      {:clixir, path: "../clixir"},
+    [{:clixir, path: "../clixir"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:mix_test_watch, "~> 0.3", only: [:dev, :test]}]
   end

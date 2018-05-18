@@ -298,6 +298,66 @@ static void _dispatch_Elixir_Uderzo_Bindings_uderzo_init(const char *buf, unsign
 // END OF HEADER
 
 
+// Generated code for draw_text from Elixir.Uderzo.Thermostat
+
+#line 61 "/home/cees/mine/uderzo_poncho/uderzo/lib/uderzo/thermostat.ex"
+static void _dispatch_Elixir_Uderzo_Thermostat_draw_text(const char *buf, unsigned short len, int *index) {
+    double sz;
+    char t[BUF_SIZE];
+    long t_len;
+    long tl;
+    double x;
+    double y;
+    assert(ei_decode_binary(buf, index, t, &t_len) == 0);
+    t[t_len] = '\0';
+    assert(ei_decode_long(buf, index, &tl) == 0);
+    assert(ei_decode_double(buf, index, &sz) == 0);
+    assert(ei_decode_double(buf, index, &x) == 0);
+    assert(ei_decode_double(buf, index, &y) == 0);
+    nvgFontSize(vg, sz);
+    nvgFontFace(vg, "sans");
+    nvgTextAlign(vg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
+    nvgFillColor(vg, nvgRGBA(255, 255, 255, 255));
+    nvgText(vg, x, y, t, t + tl);
+}
+
+// Generated code for show_flame from Elixir.Uderzo.Thermostat
+
+#line 56 "/home/cees/mine/uderzo_poncho/uderzo/lib/uderzo/thermostat.ex"
+static void _dispatch_Elixir_Uderzo_Thermostat_show_flame(const char *buf, unsigned short len, int *index) {
+    double h;
+    double w;
+    assert(ei_decode_double(buf, index, &w) == 0);
+    assert(ei_decode_double(buf, index, &h) == 0);
+    fprintf(stderr, "Here is where we draw a flame..;");
+}
+
+// Generated code for create_font from Elixir.Uderzo.Thermostat
+
+#line 21 "/home/cees/mine/uderzo_poncho/uderzo/lib/uderzo/thermostat.ex"
+static void _dispatch_Elixir_Uderzo_Thermostat_create_font(const char *buf, unsigned short len, int *index) {
+    char file_name[BUF_SIZE];
+    long file_name_len;
+    char name[BUF_SIZE];
+    long name_len;
+    int retval;
+    assert(ei_decode_binary(buf, index, name, &name_len) == 0);
+    name[name_len] = '\0';
+    assert(ei_decode_binary(buf, index, file_name, &file_name_len) == 0);
+    file_name[file_name_len] = '\0';
+    assert(nvgCreateFont(vg, name, file_name) >= 0);
+}
+
+
+#line 1 "c_src/thermostat.hx"
+// -*- mode; c; -*-
+
+#include "uderzo_support.h"
+
+
+// END OF HEADER
+
+
 // Generated code for draw_text from Elixir.UderzoExample.Thermostat
 
 #line 61 "/home/cees/mine/uderzo_poncho/uderzo_example/lib/thermostat.ex"
@@ -350,7 +410,7 @@ static void _dispatch_Elixir_UderzoExample_Thermostat_create_font(const char *bu
 
 
 /* ANSI-C code produced by gperf version 3.1 */
-/* Command-line: /usr/bin/gperf -t /tmp/clixir-temp-nonode@nohost--576460752303423453.gperf  */
+/* Command-line: /usr/bin/gperf -t /tmp/clixir-temp-nonode@nohost--576460752303422079.gperf  */
 /* Computed positions: -k'24' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -380,13 +440,13 @@ static void _dispatch_Elixir_UderzoExample_Thermostat_create_font(const char *bu
 #error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gperf@gnu.org>."
 #endif
 
-#line 1 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
+#line 1 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
 struct dispatch_entry {
   char *name;
   void (*dispatch_func)(const char *buf, unsigned short len, int *index);
 };
 
-#define TOTAL_KEYWORDS 8
+#define TOTAL_KEYWORDS 11
 #define MIN_WORD_LENGTH 34
 #define MAX_WORD_LENGTH 43
 #define MIN_HASH_VALUE 34
@@ -415,8 +475,8 @@ hash (register const char *str, register size_t len)
       53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
       53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
       53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
-      53,  5, 53, 10, 53, 53, 53, 53, 53, 53,
-      53, 53, 53, 53, 53, 53, 53,  0, 53, 53,
+      53,  0, 53, 10, 53, 53, 53, 53, 53, 53,
+      53, 53, 53, 53, 53, 53,  0,  5, 53, 53,
       53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
       53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
       53, 53, 53, 53, 53, 53, 53, 53, 53, 53,
@@ -444,25 +504,31 @@ in_word_set (register const char *str, register size_t len)
       {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
       {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
       {""}, {""}, {""}, {""}, {""}, {""}, {""},
-#line 10 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
+#line 11 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
+      {"Elixir_Uderzo_Thermostat_draw_text", _dispatch_Elixir_Uderzo_Thermostat_draw_text},
+#line 12 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
+      {"Elixir_Uderzo_Thermostat_show_flame", _dispatch_Elixir_Uderzo_Thermostat_show_flame},
+#line 13 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
+      {"Elixir_Uderzo_Thermostat_create_font", _dispatch_Elixir_Uderzo_Thermostat_create_font},
+      {""}, {""},
+#line 10 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
       {"Elixir_Uderzo_Bindings_uderzo_init", _dispatch_Elixir_Uderzo_Bindings_uderzo_init},
-      {""}, {""}, {""}, {""},
-#line 6 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
+      {""},
+#line 14 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
+      {"Elixir_UderzoExample_Thermostat_draw_text", _dispatch_Elixir_UderzoExample_Thermostat_draw_text},
+#line 15 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
+      {"Elixir_UderzoExample_Thermostat_show_flame", _dispatch_Elixir_UderzoExample_Thermostat_show_flame},
+#line 16 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
+      {"Elixir_UderzoExample_Thermostat_create_font", _dispatch_Elixir_UderzoExample_Thermostat_create_font},
+#line 6 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
       {"Elixir_Uderzo_Bindings_uderzo_end_frame", _dispatch_Elixir_Uderzo_Bindings_uderzo_end_frame},
       {""},
-#line 7 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
+#line 7 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
       {"Elixir_Uderzo_Bindings_uderzo_start_frame", _dispatch_Elixir_Uderzo_Bindings_uderzo_start_frame},
       {""}, {""}, {""}, {""},
-#line 11 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
-      {"Elixir_UderzoExample_Thermostat_draw_text", _dispatch_Elixir_UderzoExample_Thermostat_draw_text},
-#line 12 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
-      {"Elixir_UderzoExample_Thermostat_show_flame", _dispatch_Elixir_UderzoExample_Thermostat_show_flame},
-#line 13 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
-      {"Elixir_UderzoExample_Thermostat_create_font", _dispatch_Elixir_UderzoExample_Thermostat_create_font},
-      {""}, {""},
-#line 9 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
+#line 9 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
       {"Elixir_Uderzo_Bindings_glfw_create_window", _dispatch_Elixir_Uderzo_Bindings_glfw_create_window},
-#line 8 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
+#line 8 "/tmp/clixir-temp-nonode@nohost--576460752303422079.gperf"
       {"Elixir_Uderzo_Bindings_glfw_destroy_window", _dispatch_Elixir_Uderzo_Bindings_glfw_destroy_window}
     };
 

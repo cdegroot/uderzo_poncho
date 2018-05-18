@@ -10,14 +10,18 @@ defmodule Uderzo.Demo do
 
   def run do
     t_start = timestamp()
-    glfw_create_window(800, 600, "Uderzo/NanoVG Demo", self())
+    uderzo_init(self())
     receive do
-      {:glfw_create_window_result, window} ->
-        tim_init()
-        render_loop(window, t_start)
-        glfw_destroy_window(window)
       msg ->
-        IO.puts("Received unknown message #{inspect msg}")
+        glfw_create_window(800, 600, "Uderzo/NanoVG Demo", self())
+        receive do
+          {:glfw_create_window_result, window} ->
+            tim_init()
+            render_loop(window, t_start)
+            glfw_destroy_window(window)
+          msg ->
+            IO.puts("Received unknown message #{inspect msg}")
+        end
     end
   end
 
