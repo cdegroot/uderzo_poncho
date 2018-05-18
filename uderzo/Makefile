@@ -1,32 +1,22 @@
 # Makefile for Linux targets
 # Note: assumes Ubuntu. YMMV.
 
-# Note: hack alert. I'm not proud of this stuff. Make it work, make it right, make it fast.
-
-ifeq ($(ERL_EI_INCLUDE_DIR),)
-$(error ERL_EI_INCLUDE_DIR not set. Invoke via mix or set it manually)
-endif
-
-# Set Erlang-specific compile and linker flags
-ERL_CFLAGS ?= -I$(ERL_EI_INCLUDE_DIR)
-ERL_LDFLAGS ?= -L$(ERL_EI_LIBDIR)
-CLIXIR_DIR = _build/$(MIX_ENV)/lib/clixir/priv
+# Dogfood our configuration makefile fragment.
+include c_src/uderzo.mk
 
 NANOVG_SRC=c_src/nanovg
 
-HW=$(shell uname -m)
 ifeq ($(MIX_TARGET), rpi3)
-# We're cross-compiling under Nerves. Play RPi3.
-HW=armv7l
-# And use - for now - the bundled erlang and nanovg libs.
-# TODO cleanup this hack.
+# TODO cleanup this hack, if must be by including this binary somewhere.
 LIBNANOVG=../uderzo_demo_nerves/rpi3_deps/lib/libnanovg.a
 else
 LIBNANOVG=$(NANOVG_SRC)/build/libnanovg.a
 endif
 
-
 default: priv compile
+	cp $(LIBNANOVG) priv
+	cp c_src/uderzo_support.h c_src/nanovg/src/*.h priv
+	cp c_src/uderzo.mk priv
 
 setup:
 	sudo apt-get install premake4 gperf libglfw3-dev libgles2-mesa-dev libglew-dev libfreetype6-dev
@@ -43,22 +33,10 @@ $(LIBNANOVG):
 
 C_DEPS := $(wildcard c_src/*.c c_src/*.cx c_src/*.h c_src/*.hx)
 
-# On armv7l, we assume RPi and we want to build for direct framebuffer stuff.
-# Otherwise, we assume a regular X build.
-# Flags and stuff stolen from /opt/vc/src/hello_pi
-ifeq ($(HW), armv7l)
-CFLAGS+=-DUDERZO_VC -DSTANDALONE -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS -DTARGET_POSIX -D_LINUX -fPIC -DPIC -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -U_FORTIFY_SOURCE -Wall -g -DHAVE_LIBOPENMAX=2 -DOMX -DOMX_SKIP64BIT -ftree-vectorize -pipe -DUSE_EXTERNAL_OMX -DHAVE_LIBBCM_HOST -DUSE_EXTERNAL_LIBBCM_HOST -DUSE_VCHIQ_ARM -Wno-psabi
-LDFLAGS+=-L/opt/vc/lib/ -lbrcmGLESv2 -lbrcmEGL -lopenmaxil -lbcm_host -lvchostif -lvcos -lvchiq_arm -lpthread -lrt -lm
-INCLUDES+=-I/opt/vc/include/ -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux -I/opt/vc/src/hello_pi/libs/ilclient -I/opt/vc/src/hello_pi/libs/vgfont
-else
-LDFLAGS+=-lglfw -lGL -lGLU -lm -lGLEW
-endif
-
 priv/clixir: $(C_DEPS) $(LIBNANOVG)
 	LANG=C $(CC) -g $(CFLAGS) \
-    -I$(NANOVG_SRC)/src $(ERL_CFLAGS) -I$(CLIXIR_DIR) \
-	  $(INCLUDES) \
-    -o priv/clixir c_src/*.c \
+    -I$(NANOVG_SRC)/src $(ERL_CFLAGS) -I$(CLIXIR_DIR) $(INCLUDES) \
+    -o priv/clixir c_src/uderzo.c \
     $(LIBNANOVG) -lfreetype -lpng -lz \
     -L$(CLIXIR_DIR) -lclixir \
     $(ERL_LDFLAGS) -lerl_interface -lei \

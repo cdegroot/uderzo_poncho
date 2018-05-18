@@ -350,7 +350,7 @@ static void _dispatch_Elixir_UderzoExample_Thermostat_create_font(const char *bu
 
 
 /* ANSI-C code produced by gperf version 3.1 */
-/* Command-line: /usr/bin/gperf -t /tmp/clixir-temp-nonode@nohost--576460752303420606.gperf  */
+/* Command-line: /usr/bin/gperf -t /tmp/clixir-temp-nonode@nohost--576460752303423453.gperf  */
 /* Computed positions: -k'24' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -380,7 +380,7 @@ static void _dispatch_Elixir_UderzoExample_Thermostat_create_font(const char *bu
 #error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gperf@gnu.org>."
 #endif
 
-#line 1 "/tmp/clixir-temp-nonode@nohost--576460752303420606.gperf"
+#line 1 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
 struct dispatch_entry {
   char *name;
   void (*dispatch_func)(const char *buf, unsigned short len, int *index);
@@ -444,25 +444,25 @@ in_word_set (register const char *str, register size_t len)
       {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
       {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""}, {""},
       {""}, {""}, {""}, {""}, {""}, {""}, {""},
-#line 10 "/tmp/clixir-temp-nonode@nohost--576460752303420606.gperf"
+#line 10 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
       {"Elixir_Uderzo_Bindings_uderzo_init", _dispatch_Elixir_Uderzo_Bindings_uderzo_init},
       {""}, {""}, {""}, {""},
-#line 6 "/tmp/clixir-temp-nonode@nohost--576460752303420606.gperf"
+#line 6 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
       {"Elixir_Uderzo_Bindings_uderzo_end_frame", _dispatch_Elixir_Uderzo_Bindings_uderzo_end_frame},
       {""},
-#line 7 "/tmp/clixir-temp-nonode@nohost--576460752303420606.gperf"
+#line 7 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
       {"Elixir_Uderzo_Bindings_uderzo_start_frame", _dispatch_Elixir_Uderzo_Bindings_uderzo_start_frame},
       {""}, {""}, {""}, {""},
-#line 11 "/tmp/clixir-temp-nonode@nohost--576460752303420606.gperf"
+#line 11 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
       {"Elixir_UderzoExample_Thermostat_draw_text", _dispatch_Elixir_UderzoExample_Thermostat_draw_text},
-#line 12 "/tmp/clixir-temp-nonode@nohost--576460752303420606.gperf"
+#line 12 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
       {"Elixir_UderzoExample_Thermostat_show_flame", _dispatch_Elixir_UderzoExample_Thermostat_show_flame},
-#line 13 "/tmp/clixir-temp-nonode@nohost--576460752303420606.gperf"
+#line 13 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
       {"Elixir_UderzoExample_Thermostat_create_font", _dispatch_Elixir_UderzoExample_Thermostat_create_font},
       {""}, {""},
-#line 9 "/tmp/clixir-temp-nonode@nohost--576460752303420606.gperf"
+#line 9 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
       {"Elixir_Uderzo_Bindings_glfw_create_window", _dispatch_Elixir_Uderzo_Bindings_glfw_create_window},
-#line 8 "/tmp/clixir-temp-nonode@nohost--576460752303420606.gperf"
+#line 8 "/tmp/clixir-temp-nonode@nohost--576460752303423453.gperf"
       {"Elixir_Uderzo_Bindings_glfw_destroy_window", _dispatch_Elixir_Uderzo_Bindings_glfw_destroy_window}
     };
 
