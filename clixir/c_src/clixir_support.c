@@ -9,8 +9,13 @@
 // #define CLIXIR_PROTOCOL_DUMP 1
 
 static void handle_command(const char *command, unsigned short len);
+static void clixir_read_loop();
 
-void clixir_read_loop() {
+int main() {
+    clixir_read_loop();
+}
+
+static void clixir_read_loop() {
     // Protocol: 2 bytes with big endian length, then the actual command.
     // So maximum size we can read is 65535. We're not even gonna allocate
     // that with today's stack sizes and a single process. Once we start pushing
@@ -76,30 +81,6 @@ static void _handle_command(const char *command, unsigned short len, int *index)
 static void handle_command(const char *command, unsigned short len) {
   int index = 1;
   _handle_command(command, len, &index); // Skip version number
-}
-
-
-void write_single_atom(const char *atom) {
-    char buffer[MAXATOMLEN];
-    int index = 0;
-
-    ei_encode_version(buffer, &index);
-    ei_encode_atom(buffer, &index, atom);
-
-    write_response_bytes(buffer, index);
-}
-
-// Not entirely correctly named, but usually what we want - an {atom, binary} 2-tuple
-void write_response_tuple2(const char *atom, const char *message) {
-    char buffer[BUF_SIZE];
-    int index = 0;
-
-    ei_encode_version(buffer, &index);
-    ei_encode_tuple_header(buffer, &index, 2);
-    ei_encode_atom(buffer, &index, atom);
-    ei_encode_binary(buffer, &index, message, strlen(message));
-
-    write_response_bytes(buffer, index);
 }
 
 void write_response_bytes(const char *bytes, unsigned short len) {

@@ -237,7 +237,7 @@ defmodule Clixir do
       {:__aliases__, _, [name]} -> to_string(name)
       number when is_integer(number) or is_float(number) -> to_string(number)
       {oper, _, [lhs, rhs]} -> "#{to_c_var(lhs)} #{to_string(oper)} #{to_c_var(rhs)}"
-      constant_string when is_binary(constant_string) -> "\"#{constant_string}\""  # TODO embedded newlines get expanded
+      constant_string when is_binary(constant_string) -> "\"#{constant_string}\"" |> String.replace("\n", "\\n")
       {{:., _, [{var, _, nil}, struct_elem]}, _, []} -> "#{var}.#{struct_elem}"
       other_pattern -> raise "unknown C AST form #{inspect other_pattern}, please fix macro"
     end

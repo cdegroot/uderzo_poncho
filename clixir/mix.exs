@@ -9,7 +9,7 @@ defmodule Clixir.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       make_env: make_env(),
-      compilers: Mix.compilers ++ [:elixir_make],
+      compilers: Mix.compilers ++ [:clixir, :elixir_make],
       docs: docs(),
       description: description(),
       package: package(),
