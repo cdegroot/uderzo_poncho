@@ -17,7 +17,7 @@ extern void read_loop();
 NVGcontext* vg = NULL;
 //erlang_pid key_callback_pid; // etcetera for all the GLFW callbacks?
 
-int main() {
+int uderzo_init() {
   //char name[256];
   //snprintf(name, 256, "/tmp/mtrace.%d", getpid());
   //setenv("MALLOC_TRACE", name, 1);
@@ -124,7 +124,7 @@ int main() {
 
 #else
     if (!glfwInit()) {
-        SEND_ERLANG_ERR("Failed to init GLFW.");
+        fprintf(stderr, "Uderzo: Failed to init GLFW.");
         return -1;
     }
 
@@ -132,11 +132,9 @@ int main() {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
+    fprintf(stderr, "Uderzo executable initialized.");
 #endif
-
-    fprintf(stderr, "Uderzo graphics executable started up.\n");
-
-    clixir_read_loop();
 }
 
 void errorcb(int error, const char *desc) {

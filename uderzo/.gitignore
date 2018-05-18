@@ -5,3 +5,4 @@ _build
 deps
 c_src/uderzo.c
 /doc/
+c_src/thermostat.c

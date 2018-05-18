@@ -5,13 +5,19 @@ defmodule Uderzo.Bindings do
   methods, demo methods; there's nothing however that precludes
   a clean separation. Yet ;-)
   """
-  use Uderzo.Clixir
+  use Clixir
 
-  @clixir_target "c_src/uderzo"
+  @clixir_header "uderzo"
 
-  defgfx comment(comment) do
-    cdecl "char *": comment
-    fprintf(stderr, "Got comment [%s]", comment)
+  @doc """
+  Initialize Uderzo. Calling this is mandatory.
+  """
+  def_c uderzo_init(pid) do
+    cdecl erlang_pid: pid
+
+    uderzo_init()
+
+    {pid, :uderzo_initialized}
   end
 
   if :erlang.system_info(:system_architecture) == 'armv7l-unknown-linux-gnueabihf' or
@@ -19,7 +25,7 @@ defmodule Uderzo.Bindings do
     IO.puts "Compiling for RaspberryPi!"
 
     # Fake GLFW code ;-)
-    defgfx glfw_create_window(width, height, title, pid) do
+    def_c glfw_create_window(width, height, title, pid) do
       cdecl "char *": title
       cdecl long: [length, width, height]
       cdecl erlang_pid: pid
@@ -27,7 +33,7 @@ defmodule Uderzo.Bindings do
       {pid, {:glfw_create_window_result, 42}}
     end
 
-    defgfx glfw_destroy_window(window) do
+    def_c glfw_destroy_window(window) do
       cdecl long: window  # fake handle, ignore
       assert(window == 42)
     end
@@ -36,7 +42,7 @@ defmodule Uderzo.Bindings do
     # but for ease of development we stay compatible with variable-sized windows
     # for now. Later on we need to feed the result of the VideoCore screen size
     # into this thing.
-    defgfx uderzo_start_frame(window, pid) do
+    def_c uderzo_start_frame(window, pid) do
       cdecl long: window # Fake window
       cdecl erlang_pid: pid
       cdecl int: [winWidth, winHeight, fbWidth, fbHeight]
@@ -59,7 +65,7 @@ defmodule Uderzo.Bindings do
       {pid, {:uderzo_start_frame_result, 0.0, 0.0, 1920.0, 1080.0}}
     end
 
-    defgfx uderzo_end_frame(window, pid) do
+    def_c uderzo_end_frame(window, pid) do
       cdecl long: window  # fake handle, ignore
       cdecl erlang_pid: pid
 
@@ -72,7 +78,7 @@ defmodule Uderzo.Bindings do
 
     # GLFW code
 
-    defgfx glfw_create_window(width, height, title, pid) do
+    def_c glfw_create_window(width, height, title, pid) do
       cdecl "char *": title
       cdecl long: [length, width, height]
       cdecl erlang_pid: pid
@@ -96,7 +102,7 @@ defmodule Uderzo.Bindings do
       end
     end
 
-    defgfx glfw_destroy_window(window) do
+    def_c glfw_destroy_window(window) do
       cdecl "GLFWwindow *": window
       glfwDestroyWindow(window)
     end
@@ -114,7 +120,7 @@ defmodule Uderzo.Bindings do
     this message and then send the rest of the frame drawing
     commands.
     """
-    defgfx uderzo_start_frame(window, pid) do
+    def_c uderzo_start_frame(window, pid) do
       cdecl "GLFWwindow *": window
       cdecl erlang_pid: pid
       cdecl int: [winWidth, winHeight, fbWidth, fbHeight]
@@ -150,7 +156,7 @@ defmodule Uderzo.Bindings do
     does some housekeeping and eventually a buffer swap to
     display the frame.
     """
-    defgfx uderzo_end_frame(window, pid) do
+    def_c uderzo_end_frame(window, pid) do
       cdecl "GLFWwindow *": window
       cdecl erlang_pid: pid
 

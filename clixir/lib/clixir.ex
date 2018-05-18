@@ -18,7 +18,8 @@ defmodule Clixir do
     parameter_list = Enum.map(parameter_ast, fn({p, _, _}) -> p end)
     {_block, _, exprs} = expression
     module = __CALLER__.module
-    c_code = make_c(module, function_name, parameter_list, exprs)
+    location = {__CALLER__.file, __CALLER__.line}
+    c_code = make_c(module, function_name, parameter_list, exprs, location)
     e_code = make_e(module, function_name, parameter_ast, exprs)
     cfun_name = cfun_name(module, function_name)
     quote do
@@ -35,21 +36,21 @@ defmodule Clixir do
     :ok = File.mkdir_p(clixir_dir)
 
     # Write C file
+    target = Path.join(clixir_dir, Atom.to_string(env.module))
+    {:ok, target_file} = File.open(target <> ".c", [:write])
+
     header_name = Module.get_attribute(env.module, :clixir_header)
-    header = if is_nil(header_name) do
+    if is_nil(header_name) do
       Logger.warn("No @clixir_header specified in #{env.module}")
       ""
     else
-      File.read!(Path.join("c_src", header_name <> ".hx"))
+      header_file = Path.join("c_src", header_name <> ".hx")
+      header = File.read!(header_file)
+      IO.write(target_file, "#line 1 \"#{header_file}\"\n")
+      IO.write(target_file, header)
     end
-    target = Path.join(clixir_dir, Atom.to_string(env.module))
-    {:ok, target_file} = File.open(target <> ".c", [:write])
-    IO.write(target_file, "#line 1 \"#{target}.hx\"\n")
-    IO.write(target_file, header)
     IO.puts(target_file, "\n\n// END OF HEADER\n\n")
     cfuns = Module.get_attribute(env.module, :cfuns)
-    # TODO keep line number information from Elixir code?
-    IO.write(target_file, "#line 1 \"#{env.module}\"")
     Enum.map(cfuns, fn {_fun, {hdr, body}} ->
       IO.puts(target_file, hdr)
       IO.puts(target_file, body)
@@ -102,10 +103,11 @@ defmodule Clixir do
 
   # C code stuff starts here
 
-  def make_c(module, function_name, parameter_list, exprs) do
+  def make_c(module, function_name, parameter_list, exprs, {file, line}) do
     {:ok, iobuf} = StringIO.open("// Generated code for #{function_name} from #{Atom.to_string(module)}\n")
     cdecls = cdecls(exprs)
     non_decls = non_decls(exprs)
+    IO.write(iobuf, "#line #{line} \"#{file}\"\n")
     start_c_fun(iobuf, module, function_name)
     emit_c_local_vars(iobuf, cdecls)
     emit_c_unmarshalling(iobuf, parameter_list, cdecls)

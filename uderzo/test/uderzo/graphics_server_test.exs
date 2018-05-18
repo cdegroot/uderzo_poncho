@@ -4,18 +4,24 @@ defmodule Uderzo.GraphicsServerTest do
   import Uderzo.Bindings
   import Uderzo.Thermostat
 
+  @tag timeout: 5000
   test "Bindings work for a basic demo" do
-    glfw_create_window(640, 480, "Another demo window", self())
+    IO.puts("Testing!!!")
+    uderzo_init(self())
     receive do
-      {:glfw_create_window_result, window} ->
-        IO.puts("Window created, handle is #{inspect window}")
-        tim_init()
-        IO.puts("\n")
-        paint_a_frame(window)
-        Process.sleep(1_000)
-        glfw_destroy_window(window)
       msg ->
-        IO.puts("Received message #{inspect msg}")
+        glfw_create_window(640, 480, "Another demo window", self())
+        receive do
+          {:glfw_create_window_result, window} ->
+            IO.puts("Window created, handle is #{inspect window}")
+            tim_init()
+            IO.puts("\n")
+            paint_a_frame(window)
+            Process.sleep(1_000)
+            glfw_destroy_window(window)
+          msg ->
+            IO.puts("Received message #{inspect msg}")
+        end
     end
     Process.sleep(1_000)
   end

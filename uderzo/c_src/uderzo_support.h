@@ -1,6 +1,8 @@
 /*
  * Common includes for all Uderzo files.
  */
+#ifndef UDERZO_SUPPORT_H
+#define UDERZO_SUPPORT_H
 
 // OpenGL ES 2 should support the widest array of devices.
 // When UDERZO_VC is set, we target RaspberryPi's VideoCore.
@@ -25,3 +27,5 @@
 
 // Our main function has a global context for NVG
 extern NVGcontext *vg;
+
+#endif // UDERZO_SUPPORT_H
