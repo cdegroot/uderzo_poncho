@@ -3,7 +3,7 @@ defmodule Uderzo.Thermostat do
   A basic thermostat display, mostly fake, to show off Uderzo
   """
   use Clixir
-  @clixir_target "c_src/thermostat"
+  @clixir_header "thermostat"
 
   # A sample thermostat display.
   def temp(t) do
@@ -18,7 +18,7 @@ defmodule Uderzo.Thermostat do
     create_font("sans", Path.join(priv_dir, "SourceCodePro-Regular.ttf"))
   end
 
-  defgfx create_font(name, file_name) do
+  def_c create_font(name, file_name) do
     cdecl "char *": [name, file_name]
     cdecl int: retval
 
@@ -53,12 +53,12 @@ defmodule Uderzo.Thermostat do
   def draw_small_text(t, x, y), do: draw_text(t, String.length(t), 16.0, x, y)
   def draw_big_text(t, x, y), do: draw_text(t, String.length(t), 40.0, x, y)
 
-  defgfx show_flame(w, h) do
+  def_c show_flame(w, h) do
     cdecl double: [w, h]
     fprintf(stderr, "Here is where we draw a flame..;")
   end
 
-  defgfx draw_text(t, tl, sz, x, y) do
+  def_c draw_text(t, tl, sz, x, y) do
     cdecl "char *": t
     cdecl long: tl
     cdecl double: [sz, x, y]

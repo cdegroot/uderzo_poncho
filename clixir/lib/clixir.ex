@@ -18,7 +18,6 @@ defmodule Clixir do
     parameter_list = Enum.map(parameter_ast, fn({p, _, _}) -> p end)
     {_block, _, exprs} = expression
     module = __CALLER__.module
-    IO.puts("module = #{inspect module}")
     c_code = make_c(module, function_name, parameter_list, exprs)
     e_code = make_e(module, function_name, parameter_ast, exprs)
     cfun_name = cfun_name(module, function_name)
@@ -237,8 +236,14 @@ defmodule Clixir do
       {:__aliases__, _, [name]} -> to_string(name)
       number when is_integer(number) or is_float(number) -> to_string(number)
       {oper, _, [lhs, rhs]} -> "#{to_c_var(lhs)} #{to_string(oper)} #{to_c_var(rhs)}"
-      constant_string when is_binary(constant_string) -> "\"#{constant_string}\"" |> String.replace("\n", "\\n")
+      constant_string when is_binary(constant_string) ->
+        "\"#{constant_string}\"" |> String.replace("\n", "\\n")
       {{:., _, [{var, _, nil}, struct_elem]}, _, []} -> "#{var}.#{struct_elem}"
+      {funcall, _, args} ->
+        cargs = args
+        |> Enum.map(&to_c_var/1)
+        |> Enum.join(", ")
+        "#{funcall}(#{cargs})"
       other_pattern -> raise "unknown C AST form #{inspect other_pattern}, please fix macro"
     end
   end
@@ -308,10 +313,10 @@ defmodule Clixir do
   # Elixir code stuff starts here
 
   def make_e(module, function_name, parameter_list, _exprs) do
-    cfun_name = cfun_name(module, function_name)
+    cfun_name = cfun_name(module, function_name) |> String.to_atom
     quote do
       def unquote(function_name)(unquote_splicing(parameter_list)) do
-        ClixirServer.send_command(ClixirServer, {unquote(cfun_name), unquote_splicing(parameter_list)})
+        Clixir.Server.send_command(Clixir.Server, {unquote(cfun_name), unquote_splicing(parameter_list)})
       end
     end
   end

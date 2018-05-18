@@ -9,7 +9,7 @@ defmodule Clixir.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       make_env: make_env(),
-      compilers: Mix.compilers ++ [:clixir, :elixir_make],
+      compilers: Mix.compilers ++ [:elixir_make],
       docs: docs(),
       description: description(),
       package: package(),
@@ -20,6 +20,7 @@ defmodule Clixir.MixProject do
 
   def application do
     [
+      mod: {Clixir.Application, []},
       extra_applications: [:logger]
     ]
   end
@@ -29,7 +30,7 @@ defmodule Clixir.MixProject do
      {:elixir_make, "~> 0.4", runtime: false}]
   end
 
-  defp make_env() do
+  def make_env() do
     case System.get_env("ERL_EI_INCLUDE_DIR") do
       nil ->
         %{

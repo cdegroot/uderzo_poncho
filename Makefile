@@ -2,7 +2,7 @@
 # have to test in the "libraries", the
 # top level compiles everything anyway.
 
-APPS = clixir uderzo uderzo_demo_nerves
+APPS = clixir clixir_example uderzo uderzo_demo_nerves
 
 # By default, do everything to make the app run.
 all: setup deps

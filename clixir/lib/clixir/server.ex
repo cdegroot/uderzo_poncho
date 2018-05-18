@@ -1,4 +1,4 @@
-defmodule ClixirServer do
+defmodule Clixir.Server do
   @moduledoc """
   This wraps the `clixir` executable and makes it accessible. For now, we hardcode the executable
   and generate one massive one until there's a use case to change this ;-)
@@ -28,14 +28,16 @@ defmodule ClixirServer do
   ## Callbacks
 
   def init([]) do
-    Logger.info("Starting clixir process")
-    clixir_bin = Application.app_dir(:clixir, "priv/clixir")
+    app = Application.get_env(:clixir, :application)
+    Logger.info("Starting clixir process from application #{app}")
+    clixir_bin = Application.app_dir(app, "priv/clixir")
     port = Port.open({:spawn, clixir_bin},
       [{:packet, 2}, :binary, :exit_status])
     {:ok, %State{port: port}}
   end
 
   def handle_cast({:send, command}, state) do
+    Logger.debug("sending message #{inspect command}")
     bytes = :erlang.term_to_binary(command)
     Port.command(state.port, bytes)
     {:noreply, state}

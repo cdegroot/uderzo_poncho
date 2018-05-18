@@ -1,4 +1,4 @@
-defmodule Clixir.Example.ExampleModule do
+defmodule Example do
   @moduledoc """
   This is a very minimal hello world Clixir example.
   """
@@ -17,6 +17,8 @@ defmodule Clixir.Example.ExampleModule do
   def_c hello(message) do
     cdecl "char *": message
 
-    printf("Hello, %s!\n", message)
+    # Note that you don't want to send _anything_ to stdout, as that is the response
+    # channel for our communication.
+    fprintf(stderr, "Hello, %s!\n", message)
   end
 end
