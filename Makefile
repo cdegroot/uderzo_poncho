@@ -8,13 +8,17 @@ APPS = clixir clixir_example uderzo uderzo_demo_nerves
 all: setup deps
 	cd uderzo_demo_nerves; mix do deps.get, compile
 
+clean:
+	for i in $(APPS); do cd $$i; rm -rf _build deps priv/clixir; cd ..; done
+
 test: deps
-	for i in $(APPS); do cd $$i; mix test --no-start; cd ..; done
+	set -e; for i in $(APPS); do cd $$i; mix test --no-start; cd ..; done
 
 deps:
-	for i in $(APPS); do cd $$i; mix deps.get; cd ..; done
+	set -e; for i in $(APPS); do cd $$i; mix deps.get; cd ..; done
 
 setup:
+  set -e
 	asdf install
 	mix local.hex --if-missing --force
 	mix local.rebar --if-missing --force

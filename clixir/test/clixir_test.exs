@@ -31,10 +31,11 @@ defmodule ClixirTest do
     end
     {:__block__, _, exprs} = ast
 
-    {hdr, c_string} = make_c(ClixirTest, :glfw_create_window, [:width, :height, :title, :pid], exprs)
+    {hdr, c_string} = make_c(ClixirTest, :glfw_create_window, [:width, :height, :title, :pid], exprs, {"foo", 1})
 
     assert hdr == "// Generated code for glfw_create_window from Elixir.ClixirTest\n"
     assert c_string == """
+#line 1 "foo"
 static void _dispatch_Elixir_ClixirTest_glfw_create_window(const char *buf, unsigned short len, int *index) {
     long height;
     long length;
