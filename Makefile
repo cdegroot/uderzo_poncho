@@ -6,7 +6,7 @@ APPS = clixir clixir_example uderzo uderzo_demo_nerves
 
 # By default, do everything to make the app run.
 all: setup deps
-	cd uderzo_demo_nerves; mix do deps.get, compile
+	cd uderzo_demo_nerves; mix compile
 
 clean:
 	for i in $(APPS); do cd $$i; rm -rf _build deps priv/clixir; cd ..; done

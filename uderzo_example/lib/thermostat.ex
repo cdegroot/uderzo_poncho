@@ -1,4 +1,4 @@
-defmodule Uderzo.Thermostat do
+defmodule UderzoExample.Thermostat do
   @moduledoc """
   A basic thermostat display, mostly fake, to show off Uderzo
   """
@@ -25,7 +25,7 @@ defmodule Uderzo.Thermostat do
     assert(nvgCreateFont(vg, name, file_name) >= 0)
   end
 
-  def tim_render(_mouse_x, _mouse_y, win_width, win_height, t) do
+  def tim_render(win_width, win_height, t) do
     inside = temp(t)
     outside = temp(t - 10)
     burn = inside < outside

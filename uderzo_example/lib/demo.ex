@@ -5,7 +5,7 @@ defmodule Uderzo.Demo do
   as `renderDemo` is hardly low level, but it sort of shows the principle.
   """
   import Uderzo.Bindings
-  import Uderzo.Thermostat
+  import UderzoExample.Thermostat
   require Logger
 
   def run do
@@ -29,7 +29,7 @@ defmodule Uderzo.Demo do
     receive do
       {:uderzo_start_frame_result, mx, my, win_width, win_height} ->
         t = timestamp() - t_start
-        tim_render(mx, my, win_width, win_height, t)
+        tim_render(win_width, win_height, t)
         uderzo_end_frame(window, self())
         receive do
           :uderzo_end_frame_done ->
