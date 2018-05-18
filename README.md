@@ -14,7 +14,14 @@ it nicer is pretty much a downhill run.
 
 There's a bunch of projects in here and some of them need quite a lot
 of dependencies installed. Start at this directory's `Makefile` for
-a roadmap.
+a roadmap. The rest of the readme has some background info, this is
+a quick list of elixir projects included here:
+
+* `clixir` - a way to safely and easily integrate C code
+* `clixir_example` - make C code print hello, world.
+* `uderzo` - a 2D vector graphics library for Elixir
+* `uderzo_example` - a simple example of an uderzo-based display
+* `uderzo_demo_nerves` - use Nerves to make the example run on an RPi3 using VideoCore
 
 ## Why?
 
