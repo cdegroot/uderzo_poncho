@@ -5,6 +5,7 @@
   "ex_doc": {:hex, :ex_doc, "0.18.3", "f4b0e4a2ec6f333dccf761838a4b253d75e11f714b85ae271c9ae361367897b7", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm"},
   "file_system": {:hex, :file_system, "0.2.5", "a3060f063b116daf56c044c273f65202e36f75ec42e678dc10653056d3366054", [:mix], [], "hexpm"},
   "mix_test_watch": {:hex, :mix_test_watch, "0.6.0", "5e206ed04860555a455de2983937efd3ce79f42bd8536fc6b900cc286f5bb830", [:mix], [{:file_system, "~> 0.2.1 or ~> 0.3", [hex: :file_system, repo: "hexpm", optional: false]}], "hexpm"},
+  "nanovg": {:git, "https://github.com/memononen/nanovg.git", "6fa3b3d51981ef696a2deb63fe50e1d9d62ff6a9", [tag: "6fa3b3d"]},
   "nerves": {:hex, :nerves, "1.0.0", "c5b91388fc15661149bfbe8e85fec70b7034f291a484f2b4f10994d20a03d6d1", [:mix], [{:distillery, "~> 1.4", [hex: :distillery, repo: "hexpm", optional: false]}, {:jason, "~> 1.0", [hex: :jason, repo: "hexpm", optional: true]}], "hexpm"},
   "shoehorn": {:hex, :shoehorn, "0.2.0", "6aa80804145c545c59af01980d255209483b14826f53411b4a8797b24c323c20", [:mix], [{:distillery, "~> 1.0", [hex: :distillery, repo: "hexpm", optional: false]}], "hexpm"},
 }
