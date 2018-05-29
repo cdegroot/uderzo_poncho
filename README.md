@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/cdegroot/uderzo_poncho.svg?style=svg)](https://circleci.com/gh/cdegroot/uderzo_poncho)
+
 # Uderzo
 
 Uderzo is a flexible way to add simple OpenGL/NanoVG UIs to Elixir
