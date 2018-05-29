@@ -8,7 +8,7 @@ defmodule Uderzo.Mixfile do
       config_path: "config/config.exs",
       deps_path: "deps",
       lockfile: "mix.lock",
-      elixir: "~> 1.5",
+      elixir: "~> 1.6",
       start_permanent: Mix.env == :prod,
       deps: deps(),
       docs: docs(),
@@ -36,6 +36,7 @@ defmodule Uderzo.Mixfile do
   defp deps do
 
     [clixir_dep(Mix.env),
+     {:nanovg, github: "memononen/nanovg", tag: "6fa3b3d", app: false},
      {:ex_doc, "~> 0.16", runtime: false},
      {:mix_test_watch, "~> 0.3", only: [:dev, :test]}]
   end

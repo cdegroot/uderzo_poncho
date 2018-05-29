@@ -23,8 +23,9 @@ Steps:
 
 # Setup
 
-* Have a bunch of stuff installed. On Debian, you can do `make setup`,
-  on other platforms YMMV, check the Makefile for details of what you need.
+* Have a bunch of stuff installed. Use `make -f setup.mk (linux|mac)` to ensure that the
+  outide things are in place. The `linux` target is for Debian, so it might need tweaking
+  on other distributions. The `mac` target assumes homebrew is available.
 * `mix deps.get`
 * `mix compile`
 * `mix test` should now briefly open a window with the first frame. If that works,
