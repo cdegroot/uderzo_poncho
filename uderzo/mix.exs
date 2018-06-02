@@ -34,9 +34,7 @@ defmodule Uderzo.Mixfile do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-
     [clixir_dep(Mix.env),
-     {:nanovg, github: "memononen/nanovg", tag: "6fa3b3d", app: false},
      {:ex_doc, "~> 0.16", runtime: false},
      {:mix_test_watch, "~> 0.3", only: [:dev, :test]}]
   end
@@ -56,7 +54,7 @@ defmodule Uderzo.Mixfile do
           "ERL_EI_LIBDIR" => "#{:code.root_dir()}/usr/lib",
           "MIX_ENV" => "#{Mix.env}"}
       _ ->
-        %{}
+        %{"MIX_ENV" => "#{Mix.env}"}
     end
   end
 

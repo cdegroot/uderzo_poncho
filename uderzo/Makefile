@@ -4,23 +4,24 @@
 # Dogfood our configuration makefile fragment.
 include c_src/uderzo.mk
 
-NANOVG_SRC=deps/nanovg
+LIBNANOVG=priv/libnanovg.a
 
-ifeq ($(MIX_TARGET), rpi3)
-# TODO cleanup this hack, if must be by including this binary somewhere.
-LIBNANOVG=../uderzo_demo_nerves/rpi3_deps/lib/libnanovg.a
+ifeq ($(MIX_ENV), test)
+DEBUG=true
+endif
+ifeq ($(MIX_ENV), dev)
+DEBUG=true
+endif
+
+ifeq ($(DEBUG), true)
+CFLAGS=-g -DDEBUG
 else
-LIBNANOVG=$(NANOVG_SRC)/build/libnanovg.a
+CFLAGS=-O2 -DNDEBUG
 endif
 
 default: priv compile
-	cp $(LIBNANOVG) priv
-	cp c_src/uderzo_support.h $(NANOVG_SRC)/src/*.h priv
+	cp c_src/*.h priv
 	cp c_src/uderzo.mk priv
-
-premake:
-	(cd $(NANOVG_SRC); premake4 gmake)
-
 
 # TODO non-debug builds for e.g. prod Mix env?
 compile: $(LIBNANOVG) priv/clixir
@@ -28,14 +29,19 @@ compile: $(LIBNANOVG) priv/clixir
 priv:
 	mkdir priv
 
-$(LIBNANOVG): premake
-	(cd $(NANOVG_SRC)/build; make nanovg)
+$(LIBNANOVG): 
+	cd c_src; \
+	  LANG=C $(CC) $(CFLAGS) -MMD -MP \
+    -DFONS_USE_FREETYPE -D_CRT_SECURE_NO_WARNINGS \
+	  -I/usr/include/freetype2 \
+    -o /tmp/nanovg.o -c nanovg.c
+	ar -rcs $(LIBNANOVG) /tmp/nanovg.o
 
 C_DEPS := $(wildcard c_src/*.c c_src/*.cx c_src/*.h c_src/*.hx)
 
 priv/clixir: $(C_DEPS) $(LIBNANOVG)
-	LANG=C $(CC) -g $(CFLAGS) \
-		 -I$(NANOVG_SRC)/src $(ERL_CFLAGS) -I$(CLIXIR_DIR) $(INCLUDES) \
+	LANG=C $(CC) $(CFLAGS) \
+		 -Ic_src $(ERL_CFLAGS) -I$(CLIXIR_DIR) $(INCLUDES) \
 		 -o priv/clixir c_src/uderzo.c \
 		 $(LIBNANOVG) -lfreetype -lpng -lz \
 		 -L$(CLIXIR_DIR) -lclixir \
