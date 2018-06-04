@@ -1,6 +1,5 @@
 # Makefile for Linux targets
 
-UDERZO_DIR = $(CURDIR)/_build/$(MIX_ENV)/lib/uderzo/priv
 include $(UDERZO_DIR)/uderzo.mk
 
 default: priv priv/clixir

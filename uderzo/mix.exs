@@ -16,7 +16,7 @@ defmodule Uderzo.Mixfile do
       package: package(),
       name: "Uderzo",
       source_url: "https://github.com/cdegroot/uderzo_poncho",
-      make_env: make_env(),
+      make_env: &make_env/0,
       compilers: Mix.compilers ++ [:clixir, :elixir_make]
     ]
   end
@@ -47,15 +47,19 @@ defmodule Uderzo.Mixfile do
   end
 
   defp make_env() do
-    case System.get_env("ERL_EI_INCLUDE_DIR") do
+    erl_env = case System.get_env("ERL_EI_INCLUDE_DIR") do
       nil ->
         %{
           "ERL_EI_INCLUDE_DIR" => "#{:code.root_dir()}/usr/include",
           "ERL_EI_LIBDIR" => "#{:code.root_dir()}/usr/lib",
-          "MIX_ENV" => "#{Mix.env}"}
+          }
       _ ->
-        %{"MIX_ENV" => "#{Mix.env}"}
+        %{}
     end
+    erl_env
+    |> Map.put("MIX_ENV", "#{Mix.env}")
+    |> Map.put("CLIXIR_DIR", Mix.Project.build_path <> "/lib/clixir/priv")
+    |> Map.put("UDERZO_DIR", "priv/")
   end
 
   defp package() do
