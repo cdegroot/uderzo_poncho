@@ -28,4 +28,33 @@
 // Our main function has a global context for NVG
 extern NVGcontext *vg;
 
+#ifdef UDERZO_VC
+typedef struct
+{
+  // Global state for VideoCore code.
+  // TODO: remove unused stuff.
+   uint32_t screen_width;
+   uint32_t screen_height;
+// OpenGL|ES objects
+   DISPMANX_DISPLAY_HANDLE_T dispman_display;
+   DISPMANX_ELEMENT_HANDLE_T dispman_element;
+   EGLDisplay display;
+   EGLSurface surface;
+   EGLContext context;
+
+   GLuint verbose;
+   GLuint vshader;
+   GLuint fshader;
+   GLuint mshader;
+   GLuint program;
+   GLuint program2;
+   GLuint tex_fb;
+   GLuint tex;
+   GLuint buf;
+} VC_STATE_T;
+
+extern VC_STATE_T state;
+#endif
+
+
 #endif // UDERZO_SUPPORT_H

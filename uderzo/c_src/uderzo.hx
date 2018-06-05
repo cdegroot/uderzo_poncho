@@ -10,19 +10,15 @@
 #include "uderzo_support.h"
 
 extern void errorcb(int error, const char *desc);
-//extern void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 extern void read_loop();
 
 // These pesky global things, for now.
 NVGcontext* vg = NULL;
-//erlang_pid key_callback_pid; // etcetera for all the GLFW callbacks?
+#ifdef UDERZO_VC
+VC_STATE_T state;
+#endif
 
 int uderzo_init() {
-  //char name[256];
-  //snprintf(name, 256, "/tmp/mtrace.%d", getpid());
-  //setenv("MALLOC_TRACE", name, 1);
-  //setenv("MALLOC_TRACE", "/dev/stderr", 1);
-  //mtrace();
 
 #ifdef UDERZO_VC
    // Stolen from the hello triangle sample

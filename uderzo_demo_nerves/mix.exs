@@ -39,7 +39,7 @@ defmodule UderzoDemoNerves.MixProject do
     [
       {:nerves, "~> 1.0", runtime: false},
       {:shoehorn, "~> 0.2"},
-      {:uderzo_example, path: "../uderzo_example", env: Mix.env}
+      {:uderzo_example, path: "../uderzo_example", env: Mix.env},
     ] ++ deps(@target)
   end
 
@@ -48,6 +48,7 @@ defmodule UderzoDemoNerves.MixProject do
 
   defp deps(target) do
     [
+     {:elixir_make, github: "elixir-lang/elixir_make", tag: "10171b472c34e49affdc028b2bacb5b74c20d831", runtime: false, override: true},
       {:nerves_runtime, "~> 0.4"}
     ] ++ system(target)
   end
