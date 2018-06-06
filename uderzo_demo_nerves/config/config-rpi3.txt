@@ -1,0 +1,32 @@
+# Default Nerves RPi 3 config.txt
+#
+# It's possible to override this file by using a custom fwup.conf
+# configuration to pull in a replacement.
+#
+# Useful links:
+# https://www.raspberrypi.org/documentation/configuration/config-txt/README.md
+# https://github.com/raspberrypi/documentation/blob/master/configuration/device-tree.md
+
+kernel=zImage
+
+# This, along with the Raspberry Pi "x" firmware is need for the camera
+# to work. The Raspberry Pi "x" firmware is selected via the Buildroot
+# configuration. See Target packages->Hardware handling->Firmware.
+gpu_mem=192
+
+# Enable I2C and SPI
+dtparam=i2c_arm=on,spi=on
+
+# Comment this in or modify to enable OneWire
+# NOTE: check that the overlay that you specify is in the boot partition or
+#       this won't work.
+#dtoverlay=w1-gpio-pullup,gpiopin=4
+
+# Enable the UART (/dev/ttyAMA0) on the RPi3.
+enable_uart=1
+dtoverlay=pi3-miniuart-bt
+
+# Enable touchscreen. Note that 16MHz is probably sufficient and more
+# than we can drive anyway.
+dtoverlay=ads7846,penirq=25,speed=10000,penirq_pull=2,xohms=150
+dtoverlay=piscreen,speed=16000000,rotate=270
