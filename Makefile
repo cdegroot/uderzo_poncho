@@ -21,6 +21,9 @@ test:
 deps:
 	set -e; for i in $(APPS) uderzo_demo_nerves; do echo "Resolving deps in $$i"; (cd $$i; mix deps.get); done
 
+publish:
+	set -e; for i in clixir uderzo; do (cd $$i; MIX_ENV=prod mix hex.publish); done
+
 setup:
 	set -e
 	asdf install
