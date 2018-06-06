@@ -53,7 +53,7 @@ defmodule Uderzo.Bindings do
       #glBindFramebuffer(GL_FRAMEBUFFER, 0)
 
       # Update and render
-      glViewport(0, 0, 480, 320)
+      glViewport(0, 0, 720, 480)
       glClearColor(0.3, 0.3, 0.32, 1.0)
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT)
 
@@ -62,9 +62,9 @@ defmodule Uderzo.Bindings do
       glEnable(GL_CULL_FACE)
       glEnable(GL_DEPTH_TEST)
 
-      nvgBeginFrame(vg, 480, 320, 1.0)
+      nvgBeginFrame(vg, 720, 480, 1.0)
 
-      {pid, {:uderzo_start_frame_result, 0.0, 0.0, 480.0, 320.0}}
+      {pid, {:uderzo_start_frame_result, 0.0, 0.0, 720.0, 480.0}}
     end
 
     def_c uderzo_end_frame(window, pid) do
