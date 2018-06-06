@@ -47,7 +47,7 @@ defmodule UderzoExample.Thermostat do
     draw_small_text("Outside temp", left_align, 0.3 * h)
     draw_big_text(display_temp(temp), left_align, 0.34 * h)
   end
-  def draw_burn_indicator(_burn = true, w, h), do: show_flame(w, h)
+  def draw_burn_indicator(_burn = true, w, h), do: nil #show_flame(w, h)
   def draw_burn_indicator(_burn = false, _w, _h), do: nil
 
   def draw_small_text(t, x, y), do: draw_text(t, String.length(t), 16.0, x, y)

@@ -20,6 +20,8 @@ defmodule Uderzo.Bindings do
     {pid, :uderzo_initialized}
   end
 
+  # If we are on something that smells like a RPi3, then we are going to assume
+  # a compile for Broadcom's VideoCore.
   if :erlang.system_info(:system_architecture) == 'armv7l-unknown-linux-gnueabihf' or
      System.get_env("MIX_TARGET") == "rpi3" do
     IO.puts "Compiling for RaspberryPi!"
@@ -51,7 +53,7 @@ defmodule Uderzo.Bindings do
       #glBindFramebuffer(GL_FRAMEBUFFER, 0)
 
       # Update and render
-      glViewport(0, 0, 1920, 1080)
+      glViewport(0, 0, 480, 320)
       glClearColor(0.3, 0.3, 0.32, 1.0)
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT)
 
@@ -60,9 +62,9 @@ defmodule Uderzo.Bindings do
       glEnable(GL_CULL_FACE)
       glEnable(GL_DEPTH_TEST)
 
-      nvgBeginFrame(vg, 1920, 1080, 1.0)
+      nvgBeginFrame(vg, 480, 320, 1.0)
 
-      {pid, {:uderzo_start_frame_result, 0.0, 0.0, 1920.0, 1080.0}}
+      {pid, {:uderzo_start_frame_result, 0.0, 0.0, 480.0, 320.0}}
     end
 
     def_c uderzo_end_frame(window, pid) do
@@ -71,6 +73,9 @@ defmodule Uderzo.Bindings do
 
       nvgEndFrame(vg)
       eglSwapBuffers(state.display, state.surface)
+
+      # TODO I guess we could copy straight from the buffer without swapping..?
+      uderzo_vcfbcp_copy()
 
       {pid, :uderzo_end_frame_done}
     end

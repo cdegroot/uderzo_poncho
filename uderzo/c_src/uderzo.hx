@@ -1,7 +1,7 @@
 // -*- mode: c; -*-
 
 /*
- * This is the Clixir header that is put on top of the generated
+ * This is the Clixir "header" that is put on top of the generated
  * code. It should contain
  * a) includes needed for the generated code;
  * b) a main method
@@ -109,7 +109,6 @@ int uderzo_init() {
    // Enable back face culling. Why?
    //glEnable(GL_CULL_FACE);
 
-   glClearColor(0.15, 0.25, 0.35, 1.0);
    glClear(GL_COLOR_BUFFER_BIT);
    assert(glGetError() == 0);
 
@@ -118,6 +117,7 @@ int uderzo_init() {
    vg = nvgCreateGLES2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
    assert(vg != NULL);
 
+   uderzo_vcfbcp_init(); // Ignore errors for now.
 #else
     if (!glfwInit()) {
         fprintf(stderr, "Uderzo: Failed to init GLFW.");
@@ -139,5 +139,73 @@ void errorcb(int error, const char *desc) {
     // For now, just crash.
     assert(0);
 }
+
+#ifdef UDERZO_VC
+
+// Code originally from https://github.com/tasanakorn/rpi-fbcp
+// Note that faster/more complex variants exist (Adafruit has one
+// that checks the minim rectangle to be copied), but for standard
+// embedded displays low framerates shouldn't be bad. Feel free to
+// disagree and send patches ;-)
+
+// One-time initialization of the copying process. This opens files, sets
+// up one-time variables, and basically readies us for the tight-loop (once
+// per frame) stuff. Returns 0 on success, -1 on error.
+int uderzo_vcfbcp_init() {
+    struct fb_fix_screeninfo finfo;
+    uint32_t image_prt;
+
+    state.vcfbcp_fbfd = open("/dev/fb1", O_RDWR);
+    if (state.vcfbcp_fbfd == -1) {
+        fprintf(stderr, "Unable to open secondary display\n");
+        return -1;
+    }
+    if (ioctl(state.vcfbcp_fbfd, FBIOGET_FSCREENINFO, &finfo)) {
+        fprintf(stderr, "Unable to get secondary display information\n");
+        return -1;
+    }
+    if (ioctl(state.vcfbcp_fbfd, FBIOGET_VSCREENINFO, &state.vcfbcp_vinfo)) {
+        fprintf(stderr, "Unable to get secondary display information\n");
+        return -1;
+    }
+
+    fprintf(stderr, "SPI Display screen size is %d by %d, bpp=%d\n", state.vcfbcp_vinfo.xres, state.vcfbcp_vinfo.yres, state.vcfbcp_vinfo.bits_per_pixel);
+
+    state.vcfbcp_screen_resource = vc_dispmanx_resource_create(VC_IMAGE_RGB565, state.vcfbcp_vinfo.xres, state.vcfbcp_vinfo.yres, &image_prt);
+    if (!state.vcfbcp_screen_resource) {
+        fprintf(stderr, "Unable to create screen buffer\n");
+        close(state.vcfbcp_fbfd);
+        return -1;
+    }
+
+    state.vcfbcp_fbp = (char*) mmap(0, finfo.smem_len, PROT_READ | PROT_WRITE, MAP_SHARED,
+                                    state.vcfbcp_fbfd, 0);
+    if (state.vcfbcp_fbp <= 0) {
+        fprintf(stderr, "Unable to create mamory mapping\n");
+        close(state.vcfbcp_fbfd);
+        vc_dispmanx_resource_delete(state.vcfbcp_screen_resource);
+        return -1;
+    }
+
+    vc_dispmanx_rect_set(&state.vcfbcp_rect, 0, 0, state.vcfbcp_vinfo.xres, state.vcfbcp_vinfo.yres);
+
+    state.vcfbcp_initialized = VCFBCP_INITIALIZED; // zee magic cookie
+    return 0;
+}
+
+// Copies current frame to secondary display. Returns -1 on trouble.
+int uderzo_vcfbcp_copy() {
+    if (state.vcfbcp_initialized != VCFBCP_INITIALIZED) {
+        fprintf(stderr, "VideoCore framebuffer copy not initialized, did you call uderzo_vcfbcp_init?\n");
+        return -1;
+    }
+
+    vc_dispmanx_snapshot(state.dispman_display, state.vcfbcp_screen_resource, 0);
+    vc_dispmanx_resource_read_data(state.vcfbcp_screen_resource, &state.vcfbcp_rect, state.vcfbcp_fbp,
+                                   state.vcfbcp_vinfo.xres * state.vcfbcp_vinfo.bits_per_pixel / 8);
+    return 0;
+}
+
+#endif // UDERZO_VC specific code
 
 // End of manually maintained header. Generated code follows below.

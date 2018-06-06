@@ -13,6 +13,7 @@ defmodule Uderzo.Demo do
     uderzo_init(self())
     receive do
       msg ->
+        IO.puts("result of init: #{inspect msg}")
         glfw_create_window(800, 600, "Uderzo/NanoVG Demo", self())
         receive do
           {:glfw_create_window_result, window} ->
@@ -32,11 +33,14 @@ defmodule Uderzo.Demo do
     uderzo_start_frame(window, self())
     receive do
       {:uderzo_start_frame_result, mx, my, win_width, win_height} ->
+        IO.puts("Frame done. #{win_width}x#{win_height}")
         t = timestamp() - t_start
         tim_render(win_width, win_height, t)
         uderzo_end_frame(window, self())
         receive do
           :uderzo_end_frame_done ->
+            Process.sleep(1000) # TODO precise fps timing.
+            # And recurse...
             render_loop(window, t_start, frame_counter + 1)
         end
     end

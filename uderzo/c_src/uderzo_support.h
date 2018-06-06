@@ -12,6 +12,12 @@
 #  include <GLES2/gl2ext.h>
 #  include <EGL/egl.h>
 #  include <EGL/eglext.h>
+#  include <linux/fb.h>
+#  include <sys/mman.h>
+#  include <sys/types.h>
+#  include <sys/stat.h>
+#  include <sys/ioctl.h>
+#  include <fcntl.h>
 #else
 #  define GLFW_INCLUDE_ES2
 #  define GLFW_INCLUDE_GLEXT
@@ -31,30 +37,46 @@ extern NVGcontext *vg;
 #ifdef UDERZO_VC
 typedef struct
 {
-  // Global state for VideoCore code.
-  // TODO: remove unused stuff.
-   uint32_t screen_width;
-   uint32_t screen_height;
-// OpenGL|ES objects
-   DISPMANX_DISPLAY_HANDLE_T dispman_display;
-   DISPMANX_ELEMENT_HANDLE_T dispman_element;
-   EGLDisplay display;
-   EGLSurface surface;
-   EGLContext context;
+    // Global state for VideoCore code.
+    // TODO: remove unused stuff.
+    uint32_t screen_width;
+    uint32_t screen_height;
+    // OpenGL|ES objects
+    DISPMANX_DISPLAY_HANDLE_T dispman_display;
+    DISPMANX_ELEMENT_HANDLE_T dispman_element;
+    EGLDisplay display;
+    EGLSurface surface;
+    EGLContext context;
 
-   GLuint verbose;
-   GLuint vshader;
-   GLuint fshader;
-   GLuint mshader;
-   GLuint program;
-   GLuint program2;
-   GLuint tex_fb;
-   GLuint tex;
-   GLuint buf;
+    GLuint verbose;
+    GLuint vshader;
+    GLuint fshader;
+    GLuint mshader;
+    GLuint program;
+    GLuint program2;
+    GLuint tex_fb;
+    GLuint tex;
+    GLuint buf;
+
+    // State for the framebuffer copier. Note that this is only
+    // valid after you called uderzo_vcfbcp_init!
+    DISPMANX_RESOURCE_HANDLE_T vcfbcp_screen_resource;
+    struct fb_var_screeninfo vcfbcp_vinfo;
+    VC_RECT_T vcfbcp_rect;
+    int vcfbcp_fbfd;
+    char *vcfbcp_fbp;
+
+    int vcfbcp_initialized;
 } VC_STATE_T;
 
-extern VC_STATE_T state;
-#endif
+#define VCFBCP_INITIALIZED 0xccca5eee
 
+extern VC_STATE_T state;
+
+// Initialize the frame buffer copier. Call once
+extern int uderzo_vcfbcp_init();
+// Copy the framebuffer to fb1. Call when a frame has been rendered.
+extern int uderzo_vcfbcp_copy();
+#endif
 
 #endif // UDERZO_SUPPORT_H

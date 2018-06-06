@@ -8,7 +8,13 @@ ERL_CFLAGS ?= -I$(ERL_EI_INCLUDE_DIR)
 ERL_LDFLAGS ?= -L$(ERL_EI_LIBDIR)
 
 # An explicit objective of Uderzo is to support the RaspberryPi with VideoCore
-# (i.e. "no Xorg").
+# (i.e. "no Xorg"). For now, we always assume that whether you compile under
+# Nerves with a MIX_TARGET or on a RPi3 directly, you want that mode.
+# This can be done nicer at some point...
+ifeq ($(shell uname -m), armv7l)
+MIX_TARGET=rpi3
+endif
+
 ifeq ($(MIX_TARGET), rpi3)
 # We're cross-compiling under Nerves. Play RPi3.
 CFLAGS+=-DUDERZO_VC -DSTANDALONE -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS -DTARGET_POSIX -D_LINUX -fPIC -DPIC -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -U_FORTIFY_SOURCE -Wall -DHAVE_LIBOPENMAX=2 -DOMX -DOMX_SKIP64BIT -ftree-vectorize -pipe -DUSE_EXTERNAL_OMX -DHAVE_LIBBCM_HOST -DUSE_EXTERNAL_LIBBCM_HOST -DUSE_VCHIQ_ARM -Wno-psabi
