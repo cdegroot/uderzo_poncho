@@ -11,6 +11,9 @@ defmodule Uderzo.Bindings do
 
   @doc """
   Initialize Uderzo. Calling this is mandatory.
+
+  Upon completion, `pid` will receive `:uderzo_initialized`, after which
+  drawing can commence.
   """
   def_c uderzo_init(pid) do
     cdecl erlang_pid: pid
@@ -83,6 +86,18 @@ defmodule Uderzo.Bindings do
 
     # GLFW code
 
+    @doc """
+    Create a window using the GLFW library. The window will have the indicated
+    height and width.
+
+    Upon completion, one of two results will be sent to `pid`:
+    * `{:error, error_message}` when an error occurs
+    * `{:glfw_create_window_result, window_handle}` on success.
+    The `window_handle` must be stored and passed into later drawing operations.
+
+    On the RaspberryPi 3 VideoCore target, this function still needs to be called
+    even though an actual window is not created.
+    """
     def_c glfw_create_window(width, height, title, pid) do
       cdecl "char *": title
       cdecl long: [length, width, height]
@@ -107,6 +122,10 @@ defmodule Uderzo.Bindings do
       end
     end
 
+    @doc """
+    Destroy the indicated window. `window` is a window handle returned from
+    `glfw_create_window/4`.
+    """
     def_c glfw_destroy_window(window) do
       cdecl "GLFWwindow *": window
       glfwDestroyWindow(window)
@@ -121,8 +140,13 @@ defmodule Uderzo.Bindings do
     and clear the framebuffer.
 
     When this function completes, it sends the mouse location
-    and window dimensions back. It's recommended to wait for
-    this message and then send the rest of the frame drawing
+    and window dimensions back:
+
+    ```
+    {:uderzo_start_frame_result, mouse_x, mouse_y, win_width, win_height}
+    ```
+
+    It's recommended to wait for this message and then send the rest of the frame drawing
     commands.
     """
     def_c uderzo_start_frame(window, pid) do
@@ -157,9 +181,17 @@ defmodule Uderzo.Bindings do
     end
 
     @doc """
-    Complete a frame. Similarly to `uderzo_start_frame`, this
+    Complete a frame. Similarly to `uderzo_start_frame/2`, this
     does some housekeeping and eventually a buffer swap to
-    display the frame.
+    display the frame. When complete, this sends the atom
+    `:uderzo_end_frame_done` to `pid`. This can be used to
+    synchronize on complete frames.
+
+    On the Raspberry Pi 3 this function will also copy the
+    contents of the frame to the secondary framebuffer, `/dev/fb1`,
+    if available. This secondary framebuffer usually corresponds with a
+    correctly configured HAT display (see the [Nerves demo in the Uderzo
+    source repository](https://github.com/cdegroot/uderzo_poncho/tree/master/uderzo_demo_nerves) for an example).
     """
     def_c uderzo_end_frame(window, pid) do
       cdecl "GLFWwindow *": window
