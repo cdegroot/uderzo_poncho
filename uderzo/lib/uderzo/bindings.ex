@@ -23,11 +23,11 @@ defmodule Uderzo.Bindings do
     {pid, :uderzo_initialized}
   end
 
-  # If we are on something that smells like a RPi3, then we are going to assume
+  # If we are on something that smells like a Nerves target, then we are going to assume
   # a compile for Broadcom's VideoCore.
   if :erlang.system_info(:system_architecture) == 'armv7l-unknown-linux-gnueabihf' or
-     System.get_env("MIX_TARGET") == "rpi3" do
-    IO.puts "Compiling for RaspberryPi!"
+     System.get_env("MIX_TARGET") != nil do
+    IO.puts "Compiling for Nerves!"
 
     # Fake GLFW code ;-)
     def_c glfw_create_window(width, height, title, pid) do

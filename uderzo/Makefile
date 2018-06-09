@@ -6,9 +6,9 @@ include c_src/uderzo.mk
 
 LIBNANOVG=priv/libnanovg$(MIX_TARGET).a
 
-ifeq ($(MIX_TARGET), rpi3)
-RPI3_LIBFREETYPE = priv/libfreetyperpi3.a
-RPI3_LIBPNG      = priv/libpngrpi3.a
+ifdef MIX_TARGET
+TARGET_LIBFREETYPE = priv/libfreetype$(MIX_TARGET).a
+TARGET_LIBPNG      = priv/libpng$(MIX_TARGET).a
 endif
 
 ifeq ($(MIX_ENV), test)
@@ -24,7 +24,7 @@ else
 CFLAGS=+-O2 -DNDEBUG
 endif
 
-default: priv $(RPI3_LIBFREETYPE) $(RPI3_LIBPNG) compile
+default: priv $(TARGET_LIBFREETYPE) $(TARGET_LIBPNG) compile
 	cp c_src/*.h priv
 	cp c_src/uderzo.mk priv
 
@@ -34,7 +34,7 @@ compile: $(LIBNANOVG) priv/clixir
 priv:
 	mkdir priv
 
-$(LIBNANOVG): 
+$(LIBNANOVG):
 	cd c_src; \
 	  LANG=C $(CC) $(CFLAGS) -MMD -MP \
     -DFONS_USE_FREETYPE -D_CRT_SECURE_NO_WARNINGS \
@@ -44,8 +44,8 @@ $(LIBNANOVG):
 
 C_DEPS := $(wildcard c_src/*.c c_src/*.cx c_src/*.h c_src/*.hx)
 
-ifeq ($(MIX_TARGET), rpi3)
-FTLIBS = $(RPI3_LIBFREETYPE) $(RPI3_LIBPNG)
+ifdef MIX_TARGET
+FTLIBS = $(TARGET_LIBFREETYPE) $(TARGET_LIBPNG)
 else
 FTLIBS = -lfreetype -lpng
 endif
@@ -61,9 +61,8 @@ priv/clixir: $(C_DEPS) $(LIBNANOVG)
 		 $(LDFLAGS)
 
 # Not superclean, but for now we'll stick with it - install
-# libfreetype and libpng for the RPI3 target
-priv/libfreetyperpi3.a: rpi3_deps/lib/libfreetype.a
+# libfreetype and libpng for the specified target
+priv/libfreetype$(MIX_TARGET).a: rpi_deps/lib/libfreetype.a
 	cp $< $@
-priv/libpngrpi3.a: rpi3_deps/lib/libpng.a
+priv/libpng$(MIX_TARGET).a: rpi_deps/lib/libpng.a
 	cp $< $@
-
