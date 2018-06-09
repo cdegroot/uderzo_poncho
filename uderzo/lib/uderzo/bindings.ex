@@ -111,7 +111,7 @@ defmodule Uderzo.Bindings do
       glfwMakeContextCurrent(window)
       glfwSwapInterval(0)
       if vg == NULL do
-        vg = nvgCreateGLES2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG)
+        vg = nvgCreateGL2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG)
         assert(vg != NULL)
       end
       if window != NULL do

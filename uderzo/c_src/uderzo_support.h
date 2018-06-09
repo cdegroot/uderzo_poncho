@@ -19,13 +19,12 @@
 #  include <sys/ioctl.h>
 #  include <fcntl.h>
 #else
-#  define GLFW_INCLUDE_ES2
 #  define GLFW_INCLUDE_GLEXT
 #  include <GLFW/glfw3.h>
 #endif
 
 #include <nanovg.h>
-#define NANOVG_GLES2_IMPLEMENTATION
+#define NANOVG_GL2_IMPLEMENTATION
 #include <nanovg_gl.h>
 #include <nanovg_gl_utils.h>
 

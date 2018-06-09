@@ -24,6 +24,10 @@ else
 CFLAGS=+-O2 -DNDEBUG
 endif
 
+ifeq ($(shell uname -s),Darwin)
+INCLUDES += -I/usr/local/include/freetype2
+endif
+
 default: priv $(TARGET_LIBFREETYPE) $(TARGET_LIBPNG) compile
 	cp c_src/*.h priv
 	cp c_src/uderzo.mk priv
@@ -38,7 +42,7 @@ $(LIBNANOVG):
 	cd c_src; \
 	  LANG=C $(CC) $(CFLAGS) -MMD -MP \
     -DFONS_USE_FREETYPE -D_CRT_SECURE_NO_WARNINGS \
-	  -I/usr/include/freetype2 \
+	  -I/usr/include/freetype2 $(INCLUDES) \
     -o /tmp/nanovg.o -c nanovg.c
 	ar -rcs $(LIBNANOVG) /tmp/nanovg.o
 
