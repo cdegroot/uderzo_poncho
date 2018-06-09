@@ -49,14 +49,16 @@ defmodule UderzoDemoNerves.MixProject do
   defp deps(target) do
     [
      {:elixir_make, github: "elixir-lang/elixir_make", tag: "10171b472c34e49affdc028b2bacb5b74c20d831", runtime: false, override: true},
-      {:nerves_runtime, "~> 0.4"}
+     {:nerves_runtime, "~> 0.4"},
+     {:nerves_init_gadget, "~> 0.3"}
     ] ++ system(target)
   end
 
   defp system("rpi"), do: [{:nerves_system_rpi, "~> 1.0 or ~> 1.0-rc", runtime: false}]
   defp system("rpi0"), do: [{:nerves_system_rpi0, "~> 1.0 or ~> 1.0-rc", runtime: false}]
   defp system("rpi2"), do: [{:nerves_system_rpi2, "~> 1.0 or ~> 1.0-rc", runtime: false}]
-  defp system("rpi3"), do: [{:nerves_system_rpi3, "~> 1.0 or ~> 1.0-rc", runtime: false}]
+  #defp system("rpi3"), do: [{:nerves_system_rpi3, "~> 1.0 or ~> 1.0-rc", runtime: false}]
+  defp system("rpi3"), do: [{:nerves_system_rpi3_tftfb, path: "../../nerves_system_rpi3_tftfb", runtime: false}]
   defp system("bbb"), do: [{:nerves_system_bbb, "~> 1.0 or ~> 1.0-rc", runtime: false}]
   defp system("ev3"), do: [{:nerves_system_ev3, "~> 1.0 or ~> 1.0-rc", runtime: false}]
   defp system("qemu_arm"), do: [{:nerves_system_qemu_arm, "~> 1.0 or ~> 1.0-rc", runtime: false}]
