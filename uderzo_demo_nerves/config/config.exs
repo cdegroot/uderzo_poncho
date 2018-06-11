@@ -31,8 +31,6 @@ config :clixir, application: :uderzo_example
 
 config :logger, level: :error
 
-config :logger, backends: [RingLogger]
-
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 # Uncomment to use target specific configurations
