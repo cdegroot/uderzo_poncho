@@ -2,7 +2,7 @@
 # have to test in the "libraries", the
 # top level compiles everything anyway.
 
-APPS = clixir clixir_example uderzo #uderzo_demo_nerves
+APPS = clixir clixir_example uderzo svg_parser uderzo_svg uderzo_example #uderzo_demo_nerves
 SYSTEM = $(shell uname -s | tr 'A-Z' 'a-z')
 ifeq ($(CI), true)
 XVFB_RUN = xvfb-run
