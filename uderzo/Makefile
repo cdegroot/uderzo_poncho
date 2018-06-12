@@ -21,7 +21,7 @@ endif
 ifeq ($(DEBUG), true)
 CFLAGS+=-g -DDEBUG
 else
-CFLAGS=+-O2 -DNDEBUG
+CFLAGS+=-O2 -DNDEBUG
 endif
 
 ifeq ($(shell uname -s),Darwin)
