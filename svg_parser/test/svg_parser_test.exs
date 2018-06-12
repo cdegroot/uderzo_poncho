@@ -15,9 +15,9 @@ defmodule SvgParserTest do
     assert SvgParser.parse(@rectangle) == %Svg{
       height: 100.0,
       width:  100.0,
-      root:   %Circle{cx: 50.0, cy: 50.0, r: 40.0,
+      root:   [%Circle{cx: 50.0, cy: 50.0, r: 40.0,
                       stroke: %Colour{r: 0.0, g: 0.0, b: 0.0, a: 0.0},
                       stroke_width: 3.0,
-                      fill: %Colour{r: 1.0, g: 0.0, b: 0.0, a: 0.0}}}
+                      fill: %Colour{r: 1.0, g: 0.0, b: 0.0, a: 0.0}}]}
   end
 end

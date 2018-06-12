@@ -7,7 +7,7 @@ defmodule SvgParser.StructMapper do
 
   use SvgParser.Elems
 
-  # Shamelessly stolen from SweetXml
+  # Shamelessly stolen from SweetXml to get the pattern matching macros we need.
   require Record
   Record.defrecord :xmlDecl, Record.extract(:xmlDecl, from_lib: "xmerl/include/xmerl.hrl")
   Record.defrecord :xmlAttribute, Record.extract(:xmlAttribute, from_lib: "xmerl/include/xmerl.hrl")
@@ -23,18 +23,27 @@ defmodule SvgParser.StructMapper do
   # xmlerl seems to return {{:xmlElement, ...}, []}
   def map({xmlElement(name: :svg, attributes: attributes, content: content), []}) do
     attr_map = extract_attr_map(attributes)
+    elems = content
+    |> map()
+    |> Enum.filter(fn(e) -> !is_nil(e) end)
     %Svg{height: floatify(attr_map[:height]),
          width: floatify(attr_map[:width]),
-         root: map(content)}
+         root: elems}
   end
 
   def map(elems) when is_list(elems), do: Enum.map(elems, &map/1)
 
   # We ignore xmlText, that's usually whitespace in the source
   def map(xmlText()), do: nil
+
   def map(xmlElement(name: :circle, attributes: attributes)) do
     attr_map = extract_attr_map(attributes)
-    %Circle{}
+    %Circle{cx: floatify(attr_map[:cx]),
+            cy: floatify(attr_map[:cy]),
+            r: floatify(attr_map[:r]),
+            stroke: colourify(attr_map[:stroke]),
+            stroke_width: floatify(attr_map[:"stroke-width"]),
+            fill: colourify(attr_map[:fill])}
   end
 
   defp extract_attr_map(list_of_records) do
@@ -47,4 +56,17 @@ defmodule SvgParser.StructMapper do
 
   defp floatify(value) when is_bitstring(value), do: elem(Float.parse(value), 0)
   defp floatify(value) when is_list(value), do: floatify(to_string(value))
+
+  defp colourify('red'), do: colourify(1, 0, 0)
+  defp colourify('black'), do: colourify(0, 0, 0)
+  defp colourify(['#', rh, rl, gh, gl, bh, bl]) do
+    %Colour{
+      r: ((rh * 256) + rl) / 255,
+      g: ((gh * 256) + gl) / 255,
+      b: ((bh * 256) + bl) / 255,
+      a: 0
+    }
+  end
+
+  defp colourify(r, g, b, a \\ 0), do: %Colour{r: r/1, g: g/1, b: b/1, a: a/1}
 end

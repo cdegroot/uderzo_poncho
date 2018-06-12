@@ -19,7 +19,6 @@ defmodule SvgParser.MixProject do
 
   defp deps do
     [
-      {:sweet_xml, "~> 0.6.5"},
       {:mix_test_watch, "~> 0.6", only: :dev, runtime: false}
     ]
   end
