@@ -28,7 +28,7 @@ defmodule Clixir.MixProject do
   defp deps do
     [{:mix_test_watch, "~> 0.3", only: [:dev, :test]},
      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
-     {:elixir_make, github: "elixir-lang/elixir_make", tag: "10171b472c34e49affdc028b2bacb5b74c20d831", runtime: false}]
+     {:elixir_make, "~> 0.4.2", runtime: false}]
   end
 
   def make_env() do
