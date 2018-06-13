@@ -1,18 +1,56 @@
 defmodule UderzoSvg do
   @moduledoc """
-  Documentation for UderzoSvg.
+  SVG support for Uderzo. This file defines macros to deal with SVG files.
   """
 
-  @doc """
-  Hello world.
+  use SvgParser.Elems # TODO maybe move this to `use SvgParser`?
+  defmacro __using__(_opts) do
+    quote do
+      use Clixir
+      import UderzoSvg
+    end
+  end
 
-  ## Examples
 
-      iex> UderzoSvg.hello
-      :world
+  defmacro def_svg(name, xs, ys, x, y, svg_data) do
+    svg = parse_svg(svg_data, xs, ys, x, y)
+    clixir_code = make_clixir(svg)
+    quote do
+      def_c unquote(name)() do
+        unquote_splicing(clixir_code)
+      end
+    end
+  end
 
-  """
-  def hello do
-    :world
+
+  def parse_svg(svg_data, xs, ys, x, y) do
+    svg_data
+    |> SvgParser.parse()
+    |> SvgParser.normalize()
+    |> SvgParser.scale(xs, ys)
+    |> SvgParser.move(x, y)
+  end
+
+  def make_clixir(svg) do
+    svg.contents
+    |> Enum.map(&make_clixir_for_elem/1)
+  end
+
+  def make_clixir_for_elem(%Circle{} = circle) do
+    quote do
+      nvgBeginPath(nvg)
+      nvgCircle(nvg, unquote(circle.c.x), unquote(circle.c.y), unquote(circle.r.l))
+      nvgFillColor(nvg, nvgRGBA(unquote(circle.fill.r), unquote(circle.fill.g),
+            unquote(circle.fill.b), unquote(circle.fill.a)))
+      nvgFill(nvg)
+      nvgStrokeColor(nvg, nvgRGBA(unquote(circle.stroke.r), unquote(circle.stroke.g),
+        unquote(circle.stroke.b), unquote(circle.stroke.a)))
+      nvgStrokeWidth(nvg, unquote(circle.stroke_width.l))
+      nvgStroke(nvg)
+    end
+  end
+
+  def make_clixir_for_elem(unknown) do
+    raise "Unknown SVG element #{inspect unknown}"
   end
 end

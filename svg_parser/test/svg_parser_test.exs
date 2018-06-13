@@ -24,7 +24,7 @@ defmodule SvgParserTest do
   test "normalizes SVG" do
     svg = SvgParser.parse(@circle)
     assert SvgParser.normalize(svg) == %Svg{
-      height: 1.0,
+5     height: 1.0,
       width: 1.0,
       contents: [%Circle{c: %Point{x: 0.5, y: 0.5}, r: %Scalar{l: 0.4},
                          stroke: %Colour{r: 0.0, g: 0.0, b: 0.0, a: 0.0},
