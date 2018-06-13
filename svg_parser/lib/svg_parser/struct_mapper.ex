@@ -28,7 +28,7 @@ defmodule SvgParser.StructMapper do
     |> Enum.filter(fn(e) -> !is_nil(e) end)
     %Svg{height: floatify(attr_map[:height]),
          width: floatify(attr_map[:width]),
-         root: elems}
+         contents: elems}
   end
 
   def map(elems) when is_list(elems), do: Enum.map(elems, &map/1)
@@ -38,11 +38,10 @@ defmodule SvgParser.StructMapper do
 
   def map(xmlElement(name: :circle, attributes: attributes)) do
     attr_map = extract_attr_map(attributes)
-    %Circle{cx: floatify(attr_map[:cx]),
-            cy: floatify(attr_map[:cy]),
-            r: floatify(attr_map[:r]),
+    %Circle{c: pointify(attr_map[:cx], attr_map[:cy]),
+            r: scalarify(attr_map[:r]),
             stroke: colourify(attr_map[:stroke]),
-            stroke_width: floatify(attr_map[:"stroke-width"]),
+            stroke_width: scalarify(attr_map[:"stroke-width"]),
             fill: colourify(attr_map[:fill])}
   end
 
@@ -67,6 +66,9 @@ defmodule SvgParser.StructMapper do
       a: 0
     }
   end
-
   defp colourify(r, g, b, a \\ 0), do: %Colour{r: r/1, g: g/1, b: b/1, a: a/1}
+
+  defp scalarify(v), do: %Scalar{l: floatify(v)}
+
+  defp pointify(x, y), do: %Point{x: floatify(x), y: floatify(y)}
 end
