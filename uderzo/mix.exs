@@ -3,7 +3,7 @@ defmodule Uderzo.Mixfile do
 
   def project do
     [ app: :uderzo,
-      version: "0.5.0",
+      version: "0.5.1",
       build_path: "_build",
       config_path: "config/config.exs",
       deps_path: "deps",
@@ -68,6 +68,8 @@ defmodule Uderzo.Mixfile do
         "c_src",
         "priv/*.ttf",
         "mix.exs",
+        "Makefile",
+        "setup.mk",
         "README*",
         "LICENSE*"],
       maintainers: ["Cees de Groot"],
