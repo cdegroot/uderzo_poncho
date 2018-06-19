@@ -47,7 +47,7 @@ defmodule Clixir.MixProject do
   def docs do
     [ extras: [
         "docs/Clixir.md"],
-      main: ["clixir"]]
+      main: "clixir"]
   end
 
   defp package() do
