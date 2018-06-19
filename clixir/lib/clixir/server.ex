@@ -56,6 +56,7 @@ defmodule Clixir.Server do
 
   def handle_info({_port, {:data, data}}, state) do
     stuff = :erlang.binary_to_term(data)
+    Logger.debug("Received response #{inspect stuff}")
     dispatch_message(stuff)
     {:noreply, state}
   end

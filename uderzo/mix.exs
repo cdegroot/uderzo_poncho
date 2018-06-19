@@ -3,7 +3,7 @@ defmodule Uderzo.Mixfile do
 
   def project do
     [ app: :uderzo,
-      version: "0.4.0",
+      version: "0.5.0",
       build_path: "_build",
       config_path: "config/config.exs",
       deps_path: "deps",
@@ -38,7 +38,7 @@ defmodule Uderzo.Mixfile do
      {:mix_test_watch, "~> 0.3", only: [:dev, :test]}]
   end
 
-  def clixir_dep(:prod), do: {:clixir, "~> 0.3.1"}
+  def clixir_dep(:prod), do: {:clixir, "~> 0.3.2"}
   def clixir_dep(_), do: {:clixir, path: "../clixir"}
 
   defp description() do

@@ -12,7 +12,7 @@ defmodule UderzoExample.Thermostat do
   end
 
   def tim_init() do
-    base_dir = Application.app_dir(:uderzo, ".")
+    base_dir = Application.app_dir(:uderzo_example, ".")
     priv_dir = Path.absname("priv", base_dir)
 
     create_font("sans", Path.join(priv_dir, "SourceCodePro-Regular.ttf"))

@@ -103,13 +103,11 @@ defmodule Uderzo.Bindings do
       cdecl long: [length, width, height]
       cdecl erlang_pid: pid
       cdecl "GLFWwindow *": window
+
       window = glfwCreateWindow(width, height, title, NULL, NULL)
-
-      # There is certain stuff that only can be done when we have a GLFW window.
-      # Do that now.
-
       glfwMakeContextCurrent(window)
       glfwSwapInterval(0)
+
       if vg == NULL do
         vg = nvgCreateGL2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG)
         assert(vg != NULL)
