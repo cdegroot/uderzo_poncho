@@ -24,16 +24,25 @@ static void clixir_read_loop() {
     char buffer[BUF_SIZE];
     unsigned char size_buffer[2];
 
-    while (1) { // TODO how do we end the fun?
-        assert(read(STDIN_FILENO, size_buffer, 2) == 2);
-        unsigned short size = (size_buffer[0] << 8) + size_buffer[1];
+    while (1) {
+        ssize_t bytes_read = read(STDIN_FILENO, size_buffer, 2);
+        if (bytes_read == 0) {
+            // We really only expect EOF here.
+            fprintf(stderr, "Clixir executable ending normally on EOF\n");
+            exit(0);
+        }
+        if (bytes_read != 2) {
+            fprintf(stderr, "Unexpected size read: %ld, errno = %d, exiting.\n", bytes_read, errno);
+            exit(errno);
+        }
 
-        unsigned short bytes_read = read(STDIN_FILENO, buffer, size);
-        if (bytes_read < 0) {
-            fprintf(stderr, "Error, read %d bytes, expected positive number\n", bytes_read);
+        unsigned short size = (size_buffer[0] << 8) + size_buffer[1];
+        bytes_read = read(STDIN_FILENO, buffer, size);
+        if (bytes_read <= 0) {
+            fprintf(stderr, "Error, read %ld bytes, expected positive number\n", bytes_read);
             exit(-1);
         } else if (bytes_read < size) {
-            fprintf(stderr, "Error, short read. Expected %d, got %d\n", size, bytes_read);
+            fprintf(stderr, "Error, short read. Expected %d, got %ld\n", size, bytes_read);
             dump_hex('<', buffer, bytes_read);
             exit(-1);
         } else {
