@@ -4,7 +4,7 @@ defmodule Clixir.MixProject do
   def project do
     [
       app: :clixir,
-      version: "0.3.0",
+      version: "0.3.1",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -46,7 +46,8 @@ defmodule Clixir.MixProject do
 
   def docs do
     [ extras: [
-        "docs/Clixir.md"]]
+        "docs/Clixir.md"],
+      main: ["clixir"]]
   end
 
   defp package() do
