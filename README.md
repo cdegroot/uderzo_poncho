@@ -91,7 +91,7 @@ Given that all the boring/hard code is generated, it becomes easy to move graphi
 code between Elixir, Clixir, and C so you can pick and choose.
 
 Clixir documentation for the latest published version of the library starts
-[here](https://hexdocs.pm/uderzo/clixir.html#content).
+[here](https://hexdocs.pm/clixir/clixir.html).
 
 ## Docs
 
@@ -103,8 +103,8 @@ found [here](https://hexdocs.pm/uderzo/api-reference.html).
 `cd uderzo_demo_nerves; mix do deps.get, run`
 
 should pop up the NanoVG demo. If you burn the Nerves firmware, it should pop up a
-(currently worse looking) demo on a Pi3. Note that currently, only Linux has been
-tested but it should work on MacOS and Windows with little adaptation.
+(currently worse looking) demo on a Pi3. Note that currently, only Linux and Mac
+OS X have been tested but it should work on Windows with little adaptation.
 
 ## License
 
