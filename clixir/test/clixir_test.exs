@@ -1,6 +1,11 @@
 defmodule ClixirTest do
   use ExUnit.Case, async: true
 
+  @moduledoc """
+  This is a very high level test of Clixir, more meant as a demo and a verification against
+  very stupid mistakes than a formal test suite.
+  """
+
   import Clixir
 
   # Example invocation. This should compile.
@@ -31,7 +36,7 @@ defmodule ClixirTest do
     end
     {:__block__, _, exprs} = ast
 
-    {hdr, c_string} = make_c(ClixirTest, :glfw_create_window, [:width, :height, :title, :pid], exprs, {"foo", 1})
+    {hdr, c_string} = Clixir.CBackend.generate_code(ClixirTest, :glfw_create_window, [:width, :height, :title, :pid], exprs, {"foo", 1})
 
     assert hdr == "// Generated code for glfw_create_window from Elixir.ClixirTest\n"
     assert c_string == """
