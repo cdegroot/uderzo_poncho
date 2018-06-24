@@ -4,7 +4,13 @@ defmodule Clixir.Application do
   and talks to the `clixir` executable.
   """
 
-  def start(_type, _args) do
-    Supervisor.start_link([Clixir.Server], strategy: :one_for_one)
+  if Mix.env == :test do
+    def start(_type, _args) do
+      {:ok, self()}
+    end
+  else
+    def start(_type, _args) do
+      Supervisor.start_link([Clixir.Server], strategy: :one_for_one)
+    end
   end
 end
