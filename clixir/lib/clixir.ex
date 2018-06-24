@@ -63,44 +63,6 @@ defmodule Clixir do
     File.close(target_file)
   end
 
-  if false do
-  def gen_perf do
-    # TODO Invoke this at the end of compiling everything
-    # TOOD Generate makefile.
-    gperf_file = tmpfile.() <> ".gperf"
-    {:ok, gperf_data} = File.open(gperf_file, [:write])
-    IO.write gperf_data, """
-    struct dispatch_entry {
-      char *name;
-      void (*dispatch_func)(const char *buf, unsigned short len, int *index);
-    };
-    %%
-    """
-    Enum.map(cfuns, fn {fun, _} -> IO.puts gperf_data, "#{fun}, _dispatch_#{fun}" end)
-    File.close(gperf_data)
-    # Call gperf and append to generated code
-    {result, 0} = System.cmd("gperf", ["-t", gperf_file])
-    IO.puts(target_file, result)
-    File.rm(gperf_file)
-    # Emit dispatch function
-    IO.puts target_file, """
-    void _dispatch_command(const char *buf, unsigned short len, int *index) {
-        char atom[MAXATOMLEN];
-        struct dispatch_entry *dpe;
-        assert(ei_decode_atom(buf, index, atom) == 0);
-
-        dpe = in_word_set(atom, strlen(atom));
-        if (dpe != NULL) {
-             (dpe->dispatch_func)(buf, len, index);
-        } else {
-            fprintf(stderr, "Dispatch function not found for [%s]\\\n", atom);
-        }
-    }
-    """
-    File.close(target_file)
-  end
-  end
-
   # C code stuff starts here
 
   def make_c(module, function_name, parameter_list, exprs, {file, line}) do
@@ -149,7 +111,7 @@ defmodule Clixir do
     |> Enum.map(fn(p) -> {p, cdecls[p]} end)
     |> Enum.map(fn
       # Fairly manual list, we can clean this up later when we have a better overview of regularities
-    {name, :double} ->
+      {name, :double} ->
         "    assert(ei_decode_double(buf, index, &#{name}) == 0);"
       {name, :long} ->
         "    assert(ei_decode_long(buf, index, &#{name}) == 0);"
@@ -167,6 +129,7 @@ defmodule Clixir do
     end)
     |> Enum.map(&(IO.puts(iobuf, &1)))
   end
+
   # Ok, the following couple of functions are currently horribly named. Also, this
   # is not really clean - got incrementally built when working on Clixir's spec and
   # first implementation.
