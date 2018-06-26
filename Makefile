@@ -5,7 +5,7 @@
 APPS = clixir clixir_example uderzo svg_parser uderzo_svg uderzo_example #uderzo_demo_nerves
 SYSTEM = $(shell uname -s | tr 'A-Z' 'a-z')
 ifeq ($(CI), true)
-XVFB_RUN = xvfb-run
+XVFB_RUN = xvfb-run -e /dev/stdout -a
 endif
 
 # By default, do everything to make the app run. This
