@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/uderzo
     docker:
-      - image: cdegroot/uderzo-ci:504214a
+      - image: cdegroot/uderzo-ci:b8c2501
     steps:
       - checkout
       - run: source ~/.asdf/asdf.sh && make setup
