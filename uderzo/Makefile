@@ -48,25 +48,11 @@ $(LIBNANOVG):
 
 C_DEPS := $(wildcard c_src/*.c c_src/*.cx c_src/*.h c_src/*.hx)
 
-ifdef MIX_TARGET
-FTLIBS = $(TARGET_LIBFREETYPE) $(TARGET_LIBPNG)
-else
-FTLIBS = -lfreetype -lpng
-endif
-
-
 priv/clixir: $(C_DEPS) $(LIBNANOVG)
 	LANG=C $(CC) $(CFLAGS) \
 		 -Ic_src $(ERL_CFLAGS) -I$(CLIXIR_DIR) $(INCLUDES) \
 		 -o priv/clixir c_src/uderzo.c \
-		 $(LIBNANOVG) $(FTLIBS) -lz \
+		 $(LIBNANOVG) -lfreetype -lpng -lz \
 		 -L$(CLIXIR_DIR) -lclixir$(MIX_TARGET) \
 		 $(ERL_LDFLAGS) -lerl_interface -lei \
 		 $(LDFLAGS)
-
-# Not superclean, but for now we'll stick with it - install
-# libfreetype and libpng for the specified target
-priv/libfreetype$(MIX_TARGET).a: rpi_deps/lib/libfreetype.a
-	cp $< $@
-priv/libpng$(MIX_TARGET).a: rpi_deps/lib/libpng.a
-	cp $< $@

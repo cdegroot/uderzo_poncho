@@ -3,7 +3,7 @@ defmodule Uderzo.Mixfile do
 
   def project do
     [ app: :uderzo,
-      version: "0.5.2",
+      version: "0.5.3",
       build_path: "_build",
       config_path: "config/config.exs",
       deps_path: "deps",
@@ -67,7 +67,6 @@ defmodule Uderzo.Mixfile do
         "lib",
         "c_src",
         "priv/*.ttf",
-        "rpi_deps",
         "mix.exs",
         "Makefile",
         "setup.mk",
