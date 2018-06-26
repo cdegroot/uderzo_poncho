@@ -2,6 +2,8 @@
 
 FROM ubuntu:18.04
 
+ENV UPDATED_AT 20180626T012240Z
+
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list && \
@@ -15,5 +17,7 @@ RUN update-locale LANG=C.UTF-8 && \
     ~/.asdf/bin/asdf plugin-add elixir && \
     ~/.asdf/bin/asdf plugin-add nodejs
 ADD .tool-versions /root
+# ASDF configures kerl so that docs have to be buildable...
+RUN apt-get install -y xsltproc fop libxml2-utils
 RUN cd ~; ~/.asdf/bin/asdf install
 RUN apt-get install -y xvfb
