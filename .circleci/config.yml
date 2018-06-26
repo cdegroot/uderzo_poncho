@@ -11,4 +11,4 @@ jobs:
           key: asdf
           paths:
             - "~/.asdf"
-      - run: source ~/.asdf/asdf.sh && make deps test
+      - run: source ~/.asdf/asdf.sh && MIX_ENV=test make deps test
