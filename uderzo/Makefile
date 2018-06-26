@@ -6,11 +6,6 @@ include c_src/uderzo.mk
 
 LIBNANOVG=priv/libnanovg$(MIX_TARGET).a
 
-ifdef MIX_TARGET
-TARGET_LIBFREETYPE = priv/libfreetype$(MIX_TARGET).a
-TARGET_LIBPNG      = priv/libpng$(MIX_TARGET).a
-endif
-
 ifeq ($(MIX_ENV), test)
 DEBUG=true
 endif
@@ -28,7 +23,7 @@ ifeq ($(shell uname -s),Darwin)
 INCLUDES += -I/usr/local/include/freetype2
 endif
 
-default: priv $(TARGET_LIBFREETYPE) $(TARGET_LIBPNG) compile
+default: priv compile
 	cp c_src/*.h priv
 	cp c_src/uderzo.mk priv
 
