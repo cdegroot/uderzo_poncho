@@ -4,7 +4,8 @@
 #ifndef UDERZO_SUPPORT_H
 #define UDERZO_SUPPORT_H
 
-// OpenGL ES 2 should support the widest array of devices.
+#define GL_GLEXT_PROTOTYPES
+
 // When UDERZO_VC is set, we target RaspberryPi's VideoCore.
 #ifdef UDERZO_VC
 #  include <bcm_host.h>
@@ -19,7 +20,6 @@
 #  include <sys/ioctl.h>
 #  include <fcntl.h>
 #else
-#  define GLFW_INCLUDE_GLEXT
 #  include <GLFW/glfw3.h>
 #endif
 
