@@ -39,7 +39,7 @@ $(LIBNANOVG):
     -DFONS_USE_FREETYPE -D_CRT_SECURE_NO_WARNINGS \
 	  -I/usr/include/freetype2 $(INCLUDES) \
     -o /tmp/nanovg.o -c nanovg.c
-	ar -rcs $(LIBNANOVG) /tmp/nanovg.o
+	$(AR) -rcs $(LIBNANOVG) /tmp/nanovg.o
 
 C_DEPS := $(wildcard c_src/*.c c_src/*.cx c_src/*.h c_src/*.hx)
 

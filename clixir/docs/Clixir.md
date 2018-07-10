@@ -79,6 +79,24 @@ about not sending anything to stdout to heart, because it's likely to really mes
 method. Note how it looks like any other Elixir invocation - the whole idea is to make
 invoking C code as transparent as possible.
 
+To get this all to build, some things need to be setup correctly:
+
+* [mix.exs](https://github.com/cdegroot/uderzo_poncho/blob/master/clixir_example/mix.exs) needs to
+incorporate the Clixir compiler and setup the build environment for the `elixir_make` plugin so that
+we can find the correct location for the Erlang libraries we use for deserializing Erlang terms.
+
+* [config/config.exs](https://github.com/cdegroot/uderzo_poncho/blob/master/clixir_example/config/config.exs) must
+have a `:clixir` configuration that points to the application that provides the `clixir` executable. You might
+have multiple dependencies that use Clixir and they each build their own version of this executable, but only
+one can be started at run-time. Usually, your top-level application integrates everything and that
+application's executable will have a `clixir` executable that incorporates all Clixir code from your
+application and your dependencies.
+
+* Finally, [Makefile](https://github.com/cdegroot/uderzo_poncho/blob/master/clixir_example/Makefile) is
+basically boilerplate code you can copy-paste; it takes the generated C file in `c_src` (containing all
+Clixir functions in all applications and a `gperf` jump table) and compiles it together with the Clixir
+run-time library into the executable that will be started.
+
 ## Performance
 
 Performance of the protocol should be very good, for the following reasons:
@@ -89,6 +107,8 @@ Performance of the protocol should be very good, for the following reasons:
 * dispatching is done using a `gperf` generated hashtable. These perfect hashtables are
   very fast, usually requiring just two memory lookups to find the function pointer to
   dispatch to.
-* most of the tight rendering code is (and should be kept) async - you're just sending
-  messages over a local file descriptor pipe and keeping the pipe filled when drawing a
-  frame should be very easy.
+* the default messaging flow is fully asynchronous so that waiting for I/O should never be
+  a blocker.
+
+One of the Uderzo examples I coded runs 100 "boids" at 100fps, meaning that 10,000 draw commands are
+sent every second; the Clixir executable takes negligible CPU.
