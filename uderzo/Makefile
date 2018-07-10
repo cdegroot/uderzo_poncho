@@ -23,6 +23,12 @@ ifeq ($(shell uname -s),Darwin)
 INCLUDES += -I/usr/local/include/freetype2
 endif
 
+# Work-around for nerves not setting $(AR) during cross-compile
+# https://github.com/nerves-project/nerves/issues/297
+ifneq ($(CROSSCOMPILE),)
+AR = $(CROSSCOMPILE)-ar
+endif
+
 default: priv compile
 	cp c_src/*.h priv
 	cp c_src/uderzo.mk priv
@@ -39,7 +45,7 @@ $(LIBNANOVG):
     -DFONS_USE_FREETYPE -D_CRT_SECURE_NO_WARNINGS \
 	  -I/usr/include/freetype2 $(INCLUDES) \
     -o /tmp/nanovg.o -c nanovg.c
-	$(AR) -rcs $(LIBNANOVG) /tmp/nanovg.o
+	$(AR) rcs $(LIBNANOVG) /tmp/nanovg.o
 
 C_DEPS := $(wildcard c_src/*.c c_src/*.cx c_src/*.h c_src/*.hx)
 
