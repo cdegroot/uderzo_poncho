@@ -21,103 +21,102 @@ VC_STATE_T state;
 int uderzo_init() {
 
 #ifdef UDERZO_VC
-   // Stolen from the hello triangle sample
-   int32_t success = 0;
-   EGLBoolean result;
-   EGLint num_config;
+    int32_t success = 0;
+    EGLBoolean result;
+    EGLint num_config;
 
-   static EGL_DISPMANX_WINDOW_T nativewindow;
+    static EGL_DISPMANX_WINDOW_T nativewindow;
 
-   DISPMANX_UPDATE_HANDLE_T dispman_update;
-   VC_RECT_T dst_rect;
-   VC_RECT_T src_rect;
+    DISPMANX_UPDATE_HANDLE_T dispman_update;
+    VC_RECT_T dst_rect;
+    VC_RECT_T src_rect;
 
-   static const EGLint attribute_list[] = {
-      EGL_RED_SIZE, 8,
-      EGL_GREEN_SIZE, 8,
-      EGL_BLUE_SIZE, 8,
-      EGL_ALPHA_SIZE, 8,
-      EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-      EGL_NONE
-   };
-   static const EGLint context_attributes[] = {
-     EGL_CONTEXT_CLIENT_VERSION, 2,
-     EGL_NONE
-   };
+    static const EGLint attribute_list[] = {
+        EGL_RED_SIZE, 8,
+        EGL_GREEN_SIZE, 8,
+        EGL_BLUE_SIZE, 8,
+        EGL_ALPHA_SIZE, 8,
+        EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+        EGL_NONE
+    };
+    static const EGLint context_attributes[] = {
+        EGL_CONTEXT_CLIENT_VERSION, 2,
+        EGL_NONE
+    };
 
-   EGLConfig config;
+    EGLConfig config;
 
-   bcm_host_init();
-   memset(&state, 0, sizeof(state));
+    bcm_host_init();
+    memset(&state, 0, sizeof(state));
 
-   // get an EGL display connection
-   state.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-   assert(state.display != EGL_NO_DISPLAY);
+    // get an EGL display connection
+    state.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    assert(state.display != EGL_NO_DISPLAY);
 
-   // initialize the EGL display connection
-   result = eglInitialize(state.display, NULL, NULL);
-   assert(EGL_FALSE != result);
+    // initialize the EGL display connection
+    result = eglInitialize(state.display, NULL, NULL);
+    assert(EGL_FALSE != result);
 
-   // get an appropriate EGL frame buffer configuration
-   result = eglChooseConfig(state.display, attribute_list, &config, 1, &num_config);
-   assert(EGL_FALSE != result);
+    // get an appropriate EGL frame buffer configuration
+    result = eglChooseConfig(state.display, attribute_list, &config, 1, &num_config);
+    assert(EGL_FALSE != result);
 
-   result = eglBindAPI(EGL_OPENGL_ES_API);
-   assert(EGL_FALSE != result);
+    result = eglBindAPI(EGL_OPENGL_ES_API);
+    assert(EGL_FALSE != result);
 
-   state.context = eglCreateContext(state.display, config, EGL_NO_CONTEXT, context_attributes);
-   assert(state.context != EGL_NO_CONTEXT);
+    state.context = eglCreateContext(state.display, config, EGL_NO_CONTEXT, context_attributes);
+    assert(state.context != EGL_NO_CONTEXT);
 
-   // create an EGL window surface
-   success = graphics_get_display_size(0 /* LCD */, &state.screen_width, &state.screen_height);
-   assert(success >= 0);
+    // create an EGL window surface
+    success = graphics_get_display_size(0 /* LCD */, &state.screen_width, &state.screen_height);
+    assert(success >= 0);
 
-   fprintf(stderr, "Raspberry screen size %d by %d\n", state.screen_width, state.screen_height);
+    fprintf(stderr, "Detected Raspberry VideoCore screen size %d by %d\n", state.screen_width, state.screen_height);
 
-   dst_rect.x = 0;
-   dst_rect.y = 0;
-   dst_rect.width = state.screen_width;
-   dst_rect.height = state.screen_height;
+    dst_rect.x = 0;
+    dst_rect.y = 0;
+    dst_rect.width = state.screen_width;
+    dst_rect.height = state.screen_height;
 
-   src_rect.x = 0;
-   src_rect.y = 0;
-   src_rect.width = state.screen_width << 16;
-   src_rect.height = state.screen_height << 16;
+    src_rect.x = 0;
+    src_rect.y = 0;
+    src_rect.width = state.screen_width << 16;
+    src_rect.height = state.screen_height << 16;
 
-   state.dispman_display = vc_dispmanx_display_open(0 /* LCD */);
-   dispman_update = vc_dispmanx_update_start(0);
+    state.dispman_display = vc_dispmanx_display_open(0 /* LCD */);
+    dispman_update = vc_dispmanx_update_start(0);
 
-   state.dispman_element = vc_dispmanx_element_add (dispman_update, state.dispman_display,
-      0/*layer*/, &dst_rect, 0/*src*/,
-      &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, 0/*transform*/);
+    state.dispman_element = vc_dispmanx_element_add (dispman_update, state.dispman_display,
+                                                     0/*layer*/, &dst_rect, 0/*src*/,
+                                                     &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, 0/*transform*/);
 
-   nativewindow.element = state.dispman_element;
-   nativewindow.width = state.screen_width;
-   nativewindow.height = state.screen_height;
-   vc_dispmanx_update_submit_sync(dispman_update);
+    nativewindow.element = state.dispman_element;
+    nativewindow.width = state.screen_width;
+    nativewindow.height = state.screen_height;
+    vc_dispmanx_update_submit_sync(dispman_update);
 
-   state.surface = eglCreateWindowSurface(state.display, config, &nativewindow, NULL);
-   assert(state.surface != EGL_NO_SURFACE);
+    state.surface = eglCreateWindowSurface(state.display, config, &nativewindow, NULL);
+    assert(state.surface != EGL_NO_SURFACE);
 
-   // connect the context to the surface
-   result = eglMakeCurrent(state.display, state.surface, state.surface, state.context);
-   assert(EGL_FALSE != result);
+    // connect the context to the surface
+    result = eglMakeCurrent(state.display, state.surface, state.surface, state.context);
+    assert(EGL_FALSE != result);
 
-   // Set background color and clear buffers
-   glClearColor(0.15f, 0.25f, 0.35f, 1.0f);
+    // Set background color and clear buffers
+    glClearColor(0.15f, 0.25f, 0.35f, 1.0f);
 
-   // Enable back face culling. Why?
-   //glEnable(GL_CULL_FACE);
+    // Enable back face culling. Why?
+    //glEnable(GL_CULL_FACE);
 
-   glClear(GL_COLOR_BUFFER_BIT);
-   assert(glGetError() == 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    assert(glGetError() == 0);
 
-   // Not in GLES2? TODO check glMatrixMode(GL_MODELVIEW);
+    // Not in GLES2? TODO check glMatrixMode(GL_MODELVIEW);
 
-   vg = nvgCreateGLES2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
-   assert(vg != NULL);
+    vg = nvgCreateGLES2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
+    assert(vg != NULL);
 
-   uderzo_vcfbcp_init(); // Ignore errors for now.
+    uderzo_vcfbcp_init(); // Configure frame buffer copying.
 #else
     if (!glfwInit()) {
         fprintf(stderr, "Uderzo: Failed to init GLFW.");
@@ -131,6 +130,7 @@ int uderzo_init() {
 
     fprintf(stderr, "Uderzo executable initialized.");
 #endif
+    return 0; // Maybe later we do some error handling .
 }
 
 void errorcb(int error, const char *desc) {
@@ -157,7 +157,7 @@ int uderzo_vcfbcp_init() {
 
     state.vcfbcp_fbfd = open("/dev/fb1", O_RDWR);
     if (state.vcfbcp_fbfd == -1) {
-        fprintf(stderr, "Unable to open secondary display\n");
+        fprintf(stderr, "Unable to open secondary display, won't do framebuffer copying. This is ok if you want to drive an HDMI display\n");
         return -1;
     }
     if (ioctl(state.vcfbcp_fbfd, FBIOGET_FSCREENINFO, &finfo)) {
@@ -196,8 +196,7 @@ int uderzo_vcfbcp_init() {
 // Copies current frame to secondary display. Returns -1 on trouble.
 int uderzo_vcfbcp_copy() {
     if (state.vcfbcp_initialized != VCFBCP_INITIALIZED) {
-        fprintf(stderr, "VideoCore framebuffer copy not initialized, did you call uderzo_vcfbcp_init?\n");
-        return -1;
+        return 0; // We probably don't have a secondary display. That's fine.
     }
 
     vc_dispmanx_snapshot(state.dispman_display, state.vcfbcp_screen_resource, 0);

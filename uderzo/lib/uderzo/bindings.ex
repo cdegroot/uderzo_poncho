@@ -27,7 +27,7 @@ defmodule Uderzo.Bindings do
   # a compile for Broadcom's VideoCore.
   if :erlang.system_info(:system_architecture) == 'armv7l-unknown-linux-gnueabihf' or
      System.get_env("MIX_TARGET") != nil do
-    IO.puts "Compiling for Nerves!"
+    IO.puts "Compiling for Raspberry Pi/VideoCore"
 
     # Fake GLFW code ;-)
     def_c glfw_create_window(width, height, title, pid) do
@@ -39,8 +39,8 @@ defmodule Uderzo.Bindings do
     end
 
     def_c glfw_destroy_window(window) do
-      cdecl long: window  # fake handle, ignore
-      assert(window == 42)
+      cdecl long: window   # fake handle, ignore
+      assert(window == 42) # be anal and insist people pass the _correct_ fake handle
     end
 
     # Note that we can optimize start frame for a fixed display like on an RPi3,
@@ -50,13 +50,10 @@ defmodule Uderzo.Bindings do
     def_c uderzo_start_frame(window, pid) do
       cdecl long: window # Fake window
       cdecl erlang_pid: pid
-      cdecl int: [winWidth, winHeight, fbWidth, fbHeight]
-      cdecl double: [mouse_x, mouse_y, win_width, win_height, t, pxRatio]
-
-      #glBindFramebuffer(GL_FRAMEBUFFER, 0)
+      cdecl double: [win_width, win_height]
 
       # Update and render
-      glViewport(0, 0, 720, 480)
+      glViewport(0, 0, state.screen_width, state.screen_height)
       glClearColor(0.3, 0.3, 0.32, 1.0)
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT)
 
@@ -65,9 +62,12 @@ defmodule Uderzo.Bindings do
       glEnable(GL_CULL_FACE)
       glEnable(GL_DEPTH_TEST)
 
-      nvgBeginFrame(vg, 720, 480, 1.0)
+      nvgBeginFrame(vg, state.screen_width, state.screen_height, 1.0)
 
-      {pid, {:uderzo_start_frame_result, 0.0, 0.0, 720.0, 480.0}}
+      win_width = state.screen_width / 1.0
+      win_height = state.screen_height / 1.0
+
+      {pid, {:uderzo_start_frame_result, 0.0, 0.0, win_width, win_height}}
     end
 
     def_c uderzo_end_frame(window, pid) do
@@ -80,7 +80,7 @@ defmodule Uderzo.Bindings do
       # TODO I guess we could copy straight from the buffer without swapping..?
       uderzo_vcfbcp_copy()
 
-      {pid, :uderzo_end_frame_done}
+      {pid, {:uderzo_end_frame_done, window}}
     end
   else
 
@@ -201,7 +201,7 @@ defmodule Uderzo.Bindings do
       glfwSwapBuffers(window)
       glfwPollEvents()
 
-      {pid, :uderzo_end_frame_done}
+      {pid, {:uderzo_end_frame_done, window}}
     end
   end
 end

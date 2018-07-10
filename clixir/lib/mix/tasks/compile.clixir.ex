@@ -23,9 +23,6 @@ defmodule Mix.Tasks.Compile.Clixir do
       Logger.warn("No Clixir files found in #{clixir_dir}, skipping final code generation step")
       :noop
     end
-    #generate_c_code
-    #generate_gperf_code
-    #invoke_gperf
   end
 
   defp generate_code(clixir_dir) do
@@ -85,11 +82,10 @@ defmodule Mix.Tasks.Compile.Clixir do
         if (dpe != NULL) {
              (dpe->dispatch_func)(buf, len, index);
         } else {
-            fprintf(stderr, "Dispatch function not found for [%s]\\\n", atom);
+            fprintf(stderr, "Dispatch function not found for [%s]\\n", atom);
         }
     }
     """
-
   end
 
   defp tmpfile, do: "/tmp/clixir-temp-#{node()}-#{:erlang.unique_integer}"

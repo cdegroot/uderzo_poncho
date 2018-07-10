@@ -91,20 +91,38 @@ Given that all the boring/hard code is generated, it becomes easy to move graphi
 code between Elixir, Clixir, and C so you can pick and choose.
 
 Clixir documentation for the latest published version of the library starts
-[here](https://hexdocs.pm/uderzo/clixir.html#content).
+[here](https://hexdocs.pm/clixir/clixir.html).
 
 ## Docs
 
 Docs for the latest version of the library can be
 found [here](https://hexdocs.pm/uderzo/api-reference.html).
 
-## Demo
+## Nerves Demo
 
 `cd uderzo_demo_nerves; mix do deps.get, run`
 
 should pop up the NanoVG demo. If you burn the Nerves firmware, it should pop up a
-(currently worse looking) demo on a Pi3. Note that currently, only Linux has been
-tested but it should work on MacOS and Windows with little adaptation.
+(currently worse looking) demo on a Pi3. Note that currently, only Linux and Mac
+OS X have been tested but it should work on Windows with little adaptation.
+
+## Desktop Demo
+
+`cd uderzo_example; mix run -e Uderzo.Demo.run --no-halt`
+
+This should pop up a window showing fake temperature readings.
+
+## Installation
+
+Ensure you are running a supported Elixir version. Uderzo has been tested with
+Elixir 1.6.5 and Erlang 20.2. Install them by first installing
+[asdf](https://github.com/asdf-vm/asdf). Then run `asdf install`
+
+### Arch Linux
+
+Assuming you're running X11 then installing the following packages should work:
+
+    sudo pacman -S gperf glfw-x11 glew
 
 ## License
 
@@ -122,3 +140,4 @@ See https://github.com/cdegroot/uderzo_poncho/projects/1
 ## Contributing
 
 Submit a pull request, an issue, or hit me up on Slack.
+
