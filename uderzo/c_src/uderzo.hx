@@ -72,7 +72,7 @@ int uderzo_init() {
    success = graphics_get_display_size(0 /* LCD */, &state.screen_width, &state.screen_height);
    assert(success >= 0);
 
-   fprintf(stderr, "Raspberry screen size %d by %d\n", state.screen_width, state.screen_height);
+   fprintf(stderr, "Detected Raspberry VideoCore screen size %d by %d\n", state.screen_width, state.screen_height);
 
    dst_rect.x = 0;
    dst_rect.y = 0;
@@ -117,7 +117,7 @@ int uderzo_init() {
    vg = nvgCreateGLES2(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
    assert(vg != NULL);
 
-   uderzo_vcfbcp_init(); // Ignore errors for now.
+   uderzo_vcfbcp_init(); // Configure frame buffer copying.
 #else
     if (!glfwInit()) {
         fprintf(stderr, "Uderzo: Failed to init GLFW.");
@@ -157,7 +157,7 @@ int uderzo_vcfbcp_init() {
 
     state.vcfbcp_fbfd = open("/dev/fb1", O_RDWR);
     if (state.vcfbcp_fbfd == -1) {
-        fprintf(stderr, "Unable to open secondary display\n");
+        fprintf(stderr, "Unable to open secondary display, won't do framebuffer copying. This is ok if you want to drive an HDMI display\n");
         return -1;
     }
     if (ioctl(state.vcfbcp_fbfd, FBIOGET_FSCREENINFO, &finfo)) {
@@ -196,8 +196,7 @@ int uderzo_vcfbcp_init() {
 // Copies current frame to secondary display. Returns -1 on trouble.
 int uderzo_vcfbcp_copy() {
     if (state.vcfbcp_initialized != VCFBCP_INITIALIZED) {
-        fprintf(stderr, "VideoCore framebuffer copy not initialized, did you call uderzo_vcfbcp_init?\n");
-        return -1;
+        return 0; // We probably don't have a secondary display. That's fine.
     }
 
     vc_dispmanx_snapshot(state.dispman_display, state.vcfbcp_screen_resource, 0);
