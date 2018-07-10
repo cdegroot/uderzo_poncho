@@ -57,7 +57,6 @@ defmodule UderzoDemoNerves.MixProject do
   defp system("rpi"), do: [{:nerves_system_rpi, "~> 1.0 or ~> 1.0-rc", runtime: false}]
   defp system("rpi0"), do: [{:nerves_system_rpi0, "~> 1.0 or ~> 1.0-rc", runtime: false}]
   defp system("rpi2"), do: [{:nerves_system_rpi2, "~> 1.0 or ~> 1.0-rc", runtime: false}]
-  #defp system("rpi3"), do: [{:nerves_system_rpi3, "~> 1.0 or ~> 1.0-rc", runtime: false}]
   defp system("rpi3"), do: [{:nerves_system_rpi3_tftfb, path: "../../nerves_system_rpi3_tftfb", runtime: false}]
   defp system("bbb"), do: [{:nerves_system_bbb, "~> 1.0 or ~> 1.0-rc", runtime: false}]
   defp system("ev3"), do: [{:nerves_system_ev3, "~> 1.0 or ~> 1.0-rc", runtime: false}]

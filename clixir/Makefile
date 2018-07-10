@@ -11,6 +11,12 @@ ERL_LDFLAGS?= -L$(ERL_EI_LIBDIR) -lerl_interface -lei
 
 LIBCLIXIR = priv/libclixir$(MIX_TARGET).a
 
+# Work-around for nerves not setting $(AR) during cross-compile
+# https://github.com/nerves-project/nerves/issues/297
+ifneq ($(CROSSCOMPILE),)
+AR = $(CROSSCOMPILE)-ar
+endif
+
 default: priv compile priv/clixir_support.h
 
 compile: $(LIBCLIXIR)
