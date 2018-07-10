@@ -39,8 +39,8 @@ defmodule Uderzo.Bindings do
     end
 
     def_c glfw_destroy_window(window) do
-      cdecl long: window  # fake handle, ignore
-      assert(window == 42)
+      cdecl long: window   # fake handle, ignore
+      assert(window == 42) # be anal and insist people pass the _correct_ fake handle
     end
 
     # Note that we can optimize start frame for a fixed display like on an RPi3,
@@ -50,10 +50,7 @@ defmodule Uderzo.Bindings do
     def_c uderzo_start_frame(window, pid) do
       cdecl long: window # Fake window
       cdecl erlang_pid: pid
-      cdecl int: [winWidth, winHeight, fbWidth, fbHeight]
-      cdecl double: [mouse_x, mouse_y, win_width, win_height, t, pxRatio]
-
-      #glBindFramebuffer(GL_FRAMEBUFFER, 0)
+      cdecl double: [win_width, win_height]
 
       # Update and render
       glViewport(0, 0, state.screen_width, state.screen_height)
@@ -83,7 +80,7 @@ defmodule Uderzo.Bindings do
       # TODO I guess we could copy straight from the buffer without swapping..?
       uderzo_vcfbcp_copy()
 
-      {pid, :uderzo_end_frame_done}
+      {pid, {:uderzo_end_frame_done, window}}
     end
   else
 
@@ -204,7 +201,7 @@ defmodule Uderzo.Bindings do
       glfwSwapBuffers(window)
       glfwPollEvents()
 
-      {pid, :uderzo_end_frame_done}
+      {pid, {:uderzo_end_frame_done, window}}
     end
   end
 end

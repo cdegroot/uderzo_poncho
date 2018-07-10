@@ -136,7 +136,7 @@ defmodule Uderzo.GenRenderer do
   end
 
   # And finally, the frame is rendered. Schedule the next frame
-  def handle_info(:uderzo_end_frame_done, state) do
+  def handle_info({:uderzo_end_frame_done, _window}, state) do
     Process.send_after(self(), :render_next, nap_time(state.ntt))
     {:noreply, state}
   end
