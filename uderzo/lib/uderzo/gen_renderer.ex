@@ -142,7 +142,7 @@ defmodule Uderzo.GenRenderer do
   end
 
   defp cur_time, do: :erlang.monotonic_time(:millisecond)
-  defp next_target_time(fps), do: cur_time() + div(1_000, fps)
+  defp next_target_time(fps), do: cur_time() + Kernel.trunc(1_000 / fps)
   defp nap_time(ntt), do: max(0, ntt - cur_time())
 
 end
