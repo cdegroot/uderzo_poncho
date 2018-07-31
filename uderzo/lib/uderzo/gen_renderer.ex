@@ -99,11 +99,33 @@ defmodule Uderzo.GenRenderer do
       genserver_opts)
   end
 
+  # Allow the user state to be set from outside processes.
+  def set_user_state(new_state) do
+    GenServer.call(Uderzo.GenRenderer, {:set_user_state, new_state})
+  end
+
+  # Get the user state.
+  def get_user_state() do
+    GenServer.call(Uderzo.GenRenderer, :get_user_state)
+  end
+
   # Just call the uderzo_init() method and let messages from Uderzo drive the rest.
   def init([title, window_width, window_height, target_fps, user_state, user_module]) do
     uderzo_init(self())
     {:ok, %State{title: title, window_width: window_width, window_height: window_height,
       target_fps: target_fps, user_state: user_state, user_module: user_module}}
+  end
+
+  # Get the user state .
+  def handle_call(:get_user_state, _from, state) do
+    {:reply, state.user_state, state}
+  end
+
+  # Set the user state directly and trigger a screen redraw.
+  def handle_call({:set_user_state, new_state}, _from, state) do
+    state = %State{state | user_state: new_state}
+    send(self(), :render_next)
+    {:reply, state, state}
   end
 
   # On uderzo_init completion, we receive :uderzo_initialized and can therefore create a window.
