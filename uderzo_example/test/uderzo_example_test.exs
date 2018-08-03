@@ -36,7 +36,7 @@ defmodule UderzoExampleTest do
 	      tim_render(win_width, win_height, t)
         uderzo_end_frame(window, self())
         receive do
-          :uderzo_end_frame_done ->
+          {:uderzo_end_frame_done, _win} ->
             IO.puts("Frame complete")
         end
     end

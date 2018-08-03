@@ -38,15 +38,15 @@ defmodule UderzoSvg do
 
   def make_clixir_for_elem(%Circle{} = circle) do
     quote do
-      nvgBeginPath(nvg)
-      nvgCircle(nvg, unquote(circle.c.x), unquote(circle.c.y), unquote(circle.r.l))
-      nvgFillColor(nvg, nvgRGBA(unquote(circle.fill.r), unquote(circle.fill.g),
+      nvgBeginPath(vg)
+      nvgCircle(vg, unquote(circle.c.x), unquote(circle.c.y), unquote(circle.r.l))
+      nvgFillColor(vg, nvgRGBA(unquote(circle.fill.r), unquote(circle.fill.g),
             unquote(circle.fill.b), unquote(circle.fill.a)))
-      nvgFill(nvg)
-      nvgStrokeColor(nvg, nvgRGBA(unquote(circle.stroke.r), unquote(circle.stroke.g),
+      nvgFill(vg)
+      nvgStrokeColor(vg, nvgRGBA(unquote(circle.stroke.r), unquote(circle.stroke.g),
         unquote(circle.stroke.b), unquote(circle.stroke.a)))
-      nvgStrokeWidth(nvg, unquote(circle.stroke_width.l))
-      nvgStroke(nvg)
+      nvgStrokeWidth(vg, unquote(circle.stroke_width.l))
+      nvgStroke(vg)
     end
   end
 

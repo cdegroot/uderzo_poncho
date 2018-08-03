@@ -33,8 +33,12 @@ defmodule UderzoTest do
 	      # This is where you'd render an actual frame. _ above would provide you a frame timer of sorts for animations etc
         uderzo_end_frame(window, self())
         receive do
-          :uderzo_end_frame_done ->
+          {:uderzo_end_frame_done, callback_window} ->
             IO.puts("Frame complete")
+            assert window == callback_window
+          something_else ->
+            IO.puts("Hey, this is something else: #{inspect something_else}")
+            assert false
         end
     end
   end
