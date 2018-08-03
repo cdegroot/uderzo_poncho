@@ -36,9 +36,9 @@ defmodule Uderzo.GenRenderer do
   called during start time but rather as soon as Uderzo is initialized. This means
   that you can call functions to load fonts, etcetera, at initialization time.
 
-  Note that once calls, GenRenderer just goes off and does rendering. There's little
-  interaction possible with it, so there's usually no need to keep the PID around
-  or name it.
+  Note that once calls, GenRenderer just goes off and does rendering. There's no
+  requirement to interact with it further, although you can set the user state directly,
+  forcing a redraw if desired.
   """
 
   @doc """
@@ -96,15 +96,20 @@ defmodule Uderzo.GenRenderer do
   def start_link(module, title, window_width, window_height, target_fps, args, genserver_opts \\ []) do
     GenServer.start_link(__MODULE__,
       [title, window_width, window_height, target_fps, args, module],
-      genserver_opts)
+      Keyword.merge([name: Uderzo.GenRenderer], genserver_opts))
   end
 
-  # Allow the user state to be set from outside processes.
+  @doc """
+    Set the user_state portion of %State{}. This is the data that gets passed into render.
+    Calling this has the side effect of redrawing the screen.
+  """
   def set_user_state(new_state) do
     GenServer.call(Uderzo.GenRenderer, {:set_user_state, new_state})
   end
 
-  # Get the user state.
+  @doc """
+    Get the user_state portion of %State{}. This is the data that gets passed into render.
+  """
   def get_user_state() do
     GenServer.call(Uderzo.GenRenderer, :get_user_state)
   end
@@ -164,7 +169,7 @@ defmodule Uderzo.GenRenderer do
   end
 
   defp cur_time, do: :erlang.monotonic_time(:millisecond)
-  defp next_target_time(fps), do: cur_time() + div(1_000, fps)
+  defp next_target_time(fps), do: cur_time() + Kernel.trunc(1_000 / fps)
   defp nap_time(ntt), do: max(0, ntt - cur_time())
 
 end
