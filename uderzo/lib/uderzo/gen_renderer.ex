@@ -36,9 +36,9 @@ defmodule Uderzo.GenRenderer do
   called during start time but rather as soon as Uderzo is initialized. This means
   that you can call functions to load fonts, etcetera, at initialization time.
 
-  Note that once calls, GenRenderer just goes off and does rendering. There's little
-  interaction possible with it, so there's usually no need to keep the PID around
-  or name it.
+  Note that once called, GenRenderer just goes off and does rendering. There's no
+  requirement to interact with it further, although you can set the user state directly,
+  forcing a redraw if desired.
   """
 
   @doc """
@@ -96,7 +96,22 @@ defmodule Uderzo.GenRenderer do
   def start_link(module, title, window_width, window_height, target_fps, args, genserver_opts \\ []) do
     GenServer.start_link(__MODULE__,
       [title, window_width, window_height, target_fps, args, module],
-      genserver_opts)
+      Keyword.merge([name: Uderzo.GenRenderer], genserver_opts))
+  end
+
+  @doc """
+    Set the user_state portion of %State{}. This is the data that gets passed into render.
+    Calling this has the side effect of redrawing the screen.
+  """
+  def set_user_state(new_state) do
+    GenServer.call(Uderzo.GenRenderer, {:set_user_state, new_state})
+  end
+
+  @doc """
+    Get the user_state portion of %State{}. This is the data that gets passed into render.
+  """
+  def get_user_state() do
+    GenServer.call(Uderzo.GenRenderer, :get_user_state)
   end
 
   # Just call the uderzo_init() method and let messages from Uderzo drive the rest.
@@ -104,6 +119,18 @@ defmodule Uderzo.GenRenderer do
     uderzo_init(self())
     {:ok, %State{title: title, window_width: window_width, window_height: window_height,
       target_fps: target_fps, user_state: user_state, user_module: user_module}}
+  end
+
+  # Get the user state .
+  def handle_call(:get_user_state, _from, state) do
+    {:reply, state.user_state, state}
+  end
+
+  # Set the user state directly and trigger a screen redraw.
+  def handle_call({:set_user_state, new_state}, _from, state) do
+    state = %State{state | user_state: new_state}
+    send(self(), :render_next)
+    {:reply, state, state}
   end
 
   # On uderzo_init completion, we receive :uderzo_initialized and can therefore create a window.
