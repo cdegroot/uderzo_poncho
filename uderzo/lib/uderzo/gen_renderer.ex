@@ -36,7 +36,7 @@ defmodule Uderzo.GenRenderer do
   called during start time but rather as soon as Uderzo is initialized. This means
   that you can call functions to load fonts, etcetera, at initialization time.
 
-  Note that once calls, GenRenderer just goes off and does rendering. There's no
+  Note that once called, GenRenderer just goes off and does rendering. There's no
   requirement to interact with it further, although you can set the user state directly,
   forcing a redraw if desired.
   """
