@@ -19,10 +19,6 @@ else
 CFLAGS+=-O2 -DNDEBUG
 endif
 
-ifeq ($(shell uname -s),Darwin)
-INCLUDES += -I/usr/local/include/freetype2
-endif
-
 # Work-around for nerves not setting $(AR) during cross-compile
 # https://github.com/nerves-project/nerves/issues/297
 ifneq ($(CROSSCOMPILE),)
@@ -42,8 +38,8 @@ priv:
 $(LIBNANOVG):
 	cd c_src; \
 	  LANG=C $(CC) $(CFLAGS) -MMD -MP \
-    -DFONS_USE_FREETYPE -D_CRT_SECURE_NO_WARNINGS \
-	  -I/usr/include/freetype2 $(INCLUDES) \
+    -D_CRT_SECURE_NO_WARNINGS \
+	  $(INCLUDES) \
     -o /tmp/nanovg.o -c nanovg.c
 	$(AR) rcs $(LIBNANOVG) /tmp/nanovg.o
 
@@ -53,7 +49,7 @@ priv/clixir: $(C_DEPS) $(LIBNANOVG)
 	LANG=C $(CC) $(CFLAGS) \
 		 -Ic_src $(ERL_CFLAGS) -I$(CLIXIR_DIR) $(INCLUDES) \
 		 -o priv/clixir c_src/uderzo.c \
-		 $(LIBNANOVG) -lfreetype -lpng -lz \
+		 $(LIBNANOVG) \
 		 -L$(CLIXIR_DIR) -lclixir$(MIX_TARGET) \
 		 $(ERL_LDFLAGS) -lerl_interface -lei \
 		 $(LDFLAGS)

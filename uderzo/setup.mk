@@ -8,9 +8,9 @@ endif
 
 .PHONY: linux mac darwin
 linux:
-	$(SUDO) apt-get install $(YES) premake4 gperf libglfw3-dev libgles2-mesa-dev libglew-dev libfreetype6-dev
+	$(SUDO) apt-get install $(YES) premake4 gperf libglfw3-dev libgles2-mesa-dev libglew-dev
 
 darwin: mac
 
 mac:
-	brew install premake glew glfw freetype
+	brew install premake glew glfw
