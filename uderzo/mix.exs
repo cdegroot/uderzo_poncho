@@ -66,7 +66,6 @@ defmodule Uderzo.Mixfile do
       files: [
         "lib",
         "c_src",
-        "priv/*.ttf",
         "mix.exs",
         "Makefile",
         "setup.mk",
