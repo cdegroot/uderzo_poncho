@@ -3,7 +3,7 @@ defmodule Uderzo.Mixfile do
 
   def project do
     [ app: :uderzo,
-      version: "0.7.0",
+      version: "0.8.0",
       build_path: "_build",
       config_path: "config/config.exs",
       deps_path: "deps",
