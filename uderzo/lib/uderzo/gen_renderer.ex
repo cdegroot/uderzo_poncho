@@ -77,9 +77,11 @@ defmodule Uderzo.GenRenderer do
   use GenServer
   import Uderzo.Bindings
 
+  require Logger
+
   defmodule State do
     defstruct [:title, :window_width, :window_height, :target_fps,
-              :window, :ntt, :user_state, :user_module]
+              :window, :user_state, :user_module, :rendering]
   end
 
   @doc """
@@ -118,7 +120,7 @@ defmodule Uderzo.GenRenderer do
   def init([title, window_width, window_height, target_fps, user_state, user_module]) do
     uderzo_init(self())
     {:ok, %State{title: title, window_width: window_width, window_height: window_height,
-      target_fps: target_fps, user_state: user_state, user_module: user_module}}
+      target_fps: target_fps, user_state: user_state, user_module: user_module, rendering: false}}
   end
 
   # Get the user state .
@@ -141,18 +143,22 @@ defmodule Uderzo.GenRenderer do
 
   # On window creation completion, we can kick off the rendering loop.
   # However, first we have promised to talk to the user initialization code
-  def handle_info({:glfw_create_window_result, window}, state) do
+  def handle_info({:glfw_create_window_result, window}, %{target_fps: target_fps} = state) do
     {:ok, user_state} = state.user_module.init_renderer(state.user_state)
+    int = Kernel.trunc(1_000 / target_fps)
     send(self(), :render_next)
+    :timer.send_interval(int, self(), :render_next)
     {:noreply, %State{state | window: window, user_state: user_state}}
   end
 
-  # We should render a frame. Calculate right away when the _next_ frame
-  # should start and tell Uderzo we're beginning a frame
+  def handle_info(:render_next, %State{rendering: true} = state) do
+    Logger.warn("skipping frame, render already in progress")
+    {:noreply, state}
+  end
+
   def handle_info(:render_next, state) do
-    ntt = next_target_time(state.target_fps)
     uderzo_start_frame(state.window, self())
-    {:noreply, %State{state | ntt: ntt}}
+    {:noreply, %{state | rendering: true}}
   end
 
   # Uderzo tells us we're good to do the actual rendering
@@ -164,12 +170,6 @@ defmodule Uderzo.GenRenderer do
 
   # And finally, the frame is rendered. Schedule the next frame
   def handle_info({:uderzo_end_frame_done, _window}, state) do
-    Process.send_after(self(), :render_next, nap_time(state.ntt))
-    {:noreply, state}
+    {:noreply, %{state | rendering: false}}
   end
-
-  defp cur_time, do: :erlang.monotonic_time(:millisecond)
-  defp next_target_time(fps), do: cur_time() + Kernel.trunc(1_000 / fps)
-  defp nap_time(ntt), do: max(0, ntt - cur_time())
-
 end
