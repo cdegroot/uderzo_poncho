@@ -126,10 +126,9 @@ defmodule Uderzo.GenRenderer do
     {:reply, state.user_state, state}
   end
 
-  # Set the user state directly and trigger a screen redraw.
+  # Set the user state directly.
   def handle_call({:set_user_state, new_state}, _from, state) do
     state = %State{state | user_state: new_state}
-    send(self(), :render_next)
     {:reply, state, state}
   end
 
