@@ -31,6 +31,10 @@ defmodule Clixir do
     location = {__CALLER__.file, __CALLER__.line}
     c_code = Clixir.CBackend.generate_code(module, function_name, parameter_list, exprs, location)
     e_code = Clixir.ElixirBackend.generate_code(module, function_name, parameter_ast)
+    IO.inspect c_code
+    IO.puts "---"
+    IO.puts Macro.to_string(e_code)
+    IO.puts "---"
     cfun_name = Clixir.CodeGenHelpers.cfun_name(module, function_name)
     quote do
       @cfuns {unquote(cfun_name), unquote(c_code)}

@@ -4,7 +4,7 @@ defmodule Clixir.MixProject do
   def project do
     [
       app: :clixir,
-      version: "0.3.3",
+      version: "0.3.4",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -28,7 +28,7 @@ defmodule Clixir.MixProject do
   defp deps do
     [{:mix_test_watch, "~> 0.3", only: [:dev, :test]},
      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
-     {:elixir_make, "~> 0.4.2", runtime: false}]
+     {:elixir_make, "~> 0.4", runtime: false}]
   end
 
   def make_env() do
