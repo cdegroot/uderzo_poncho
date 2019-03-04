@@ -1,5 +1,5 @@
 %{
-  "clixir": {:hex, :clixir, "0.3.3", "ffafaf1516455e9ea71a85f581f2fdc08fca8e6f61dc5cedcf317e605def1651", [:make, :mix], [{:elixir_make, "~> 0.4.2", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
+  "clixir": {:hex, :clixir, "0.3.4", "224f95327b8ed159eba8e1e8d0fe686e613c21d95c0dfc92047d47775ad8398d", [:make, :mix], [{:elixir_make, "~> 0.4", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
   "earmark": {:hex, :earmark, "1.3.1", "73812f447f7a42358d3ba79283cfa3075a7580a3a2ed457616d6517ac3738cb9", [:mix], [], "hexpm"},
   "elixir_make": {:hex, :elixir_make, "0.5.2", "96a28c79f5b8d34879cd95ebc04d2a0d678cfbbd3e74c43cb63a76adf0ee8054", [:mix], [], "hexpm"},
   "ex_doc": {:hex, :ex_doc, "0.19.3", "3c7b0f02851f5fc13b040e8e925051452e41248f685e40250d7e40b07b9f8c10", [:mix], [{:earmark, "~> 1.2", [hex: :earmark, repo: "hexpm", optional: false]}, {:makeup_elixir, "~> 0.10", [hex: :makeup_elixir, repo: "hexpm", optional: false]}], "hexpm"},
