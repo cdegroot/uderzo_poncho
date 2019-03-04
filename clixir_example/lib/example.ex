@@ -21,4 +21,19 @@ defmodule Example do
     # channel for our communication.
     fprintf(stderr, "Hello, %s!\n", message)
   end
+
+  @doc """
+  Do something more complex
+  """
+  def_c abs(value, pid) do
+    cdecl long: [value, result]
+    cdecl erlang_pid: pid
+
+    if value < 0 do
+      result = value * -1
+    else
+      result = value
+    end
+    {pid, {:ok, result}}
+  end
 end
