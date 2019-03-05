@@ -179,15 +179,12 @@ defmodule Clixir.CBackend do
       #{indent}ei_encode_tuple_header(response, &response_index, 2);
       #{indent}ei_encode_pid(response, &response_index, &pid);
       """)
-    IO.puts("Retvals: #{inspect retvals}")
     if length(retvals) > 1 do
       IO.puts(iobuf, "#{indent}ei_encode_tuple_header(response, &response_index, #{length(retvals)});")
     end
     retvals
     |> Enum.map(fn(retval) ->
       type = cdecls[retval]
-      IO.puts("cdecls: #{inspect cdecls}")
-      IO.puts("retval,type tuple is #{inspect retval}, #{inspect type}")
       case {retval, type} do
         {{:atom, atom}, nil} when is_binary(atom) ->
           IO.puts(iobuf, "#{indent}ei_encode_string(response, &response_index, \"#{atom}\");")
