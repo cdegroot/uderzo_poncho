@@ -148,6 +148,8 @@ void errorcb(int error, const char *desc) {
 // embedded displays low framerates shouldn't be bad. Feel free to
 // disagree and send patches ;-)
 
+// https://github.com/adafruit/rpi-fbcp/blob/master/main.c has the advanced stuff.
+
 // One-time initialization of the copying process. This opens files, sets
 // up one-time variables, and basically readies us for the tight-loop (once
 // per frame) stuff. Returns 0 on success, -1 on error.
