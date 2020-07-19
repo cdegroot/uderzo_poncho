@@ -51,5 +51,5 @@ priv/clixir: $(C_DEPS) $(LIBNANOVG)
 		 -o priv/clixir c_src/uderzo.c \
 		 $(LIBNANOVG) \
 		 -L$(CLIXIR_DIR) -lclixir$(MIX_TARGET) \
-		 $(ERL_LDFLAGS) -lerl_interface -lei \
+		 $(ERL_LDFLAGS) -lei \
 		 $(LDFLAGS)

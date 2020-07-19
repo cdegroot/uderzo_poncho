@@ -34,4 +34,4 @@ endif
 
 # For the benefit of clients:
 UDERZO_CFLAGS = -I$(UDERZO_DIR) $(ERL_CFLAGS) -I$(CLIXIR_DIR) $(INCLUDES)
-UDERZO_LDFLAGS = -L$(UDERZO_DIR) -lnanovg$(MIX_TARGET) -L$(CLIXIR_DIR) -lclixir$(MIX_TARGET) $(ERL_LDFLAGS) -lerl_interface -lei $(LDFLAGS)
+UDERZO_LDFLAGS = -L$(UDERZO_DIR) -lnanovg$(MIX_TARGET) -L$(CLIXIR_DIR) -lclixir$(MIX_TARGET) $(ERL_LDFLAGS) -lei $(LDFLAGS)

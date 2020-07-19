@@ -1,5 +1,5 @@
 %{
-  "file_system": {:hex, :file_system, "0.2.5", "a3060f063b116daf56c044c273f65202e36f75ec42e678dc10653056d3366054", [:mix], [], "hexpm"},
-  "mix_test_watch": {:hex, :mix_test_watch, "0.6.0", "5e206ed04860555a455de2983937efd3ce79f42bd8536fc6b900cc286f5bb830", [:mix], [{:file_system, "~> 0.2.1 or ~> 0.3", [hex: :file_system, repo: "hexpm", optional: false]}], "hexpm"},
+  "file_system": {:hex, :file_system, "0.2.5", "a3060f063b116daf56c044c273f65202e36f75ec42e678dc10653056d3366054", [:mix], [], "hexpm", "c11255c9af50d831a09d469533b9dbb0fcfe4586ef6681f2205ad0e29cda89ef"},
+  "mix_test_watch": {:hex, :mix_test_watch, "0.6.0", "5e206ed04860555a455de2983937efd3ce79f42bd8536fc6b900cc286f5bb830", [:mix], [{:file_system, "~> 0.2.1 or ~> 0.3", [hex: :file_system, repo: "hexpm", optional: false]}], "hexpm", "ea6f2a3766f18c2f53ca5b2d40b623ce2831c1646f36ff2b608607e20fc6c63c"},
   "sweet_xml": {:hex, :sweet_xml, "0.6.5", "dd9cde443212b505d1b5f9758feb2000e66a14d3c449f04c572f3048c66e6697", [:mix], [], "hexpm"},
 }

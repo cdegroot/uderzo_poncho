@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <sys/uio.h>
 
-#include <erl_interface.h> // or ei.h? No clue so far.
+#include <ei.h>
 
 // we try to fit most of our shit in here until proven wrong. A 64k
 // buffer size has the advantage that we can allocate it on modern

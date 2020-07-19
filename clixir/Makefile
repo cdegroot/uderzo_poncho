@@ -7,7 +7,7 @@ endif
 
 # Set Erlang-specific compile and linker flags
 ERL_CFLAGS ?= -I$(ERL_EI_INCLUDE_DIR)
-ERL_LDFLAGS?= -L$(ERL_EI_LIBDIR) -lerl_interface -lei
+ERL_LDFLAGS?= -L$(ERL_EI_LIBDIR) -lei
 
 LIBCLIXIR = priv/libclixir$(MIX_TARGET).a
 

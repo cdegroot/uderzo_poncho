@@ -1,8 +1,8 @@
 %{
-  "earmark": {:hex, :earmark, "1.2.5", "4d21980d5d2862a2e13ec3c49ad9ad783ffc7ca5769cf6ff891a4553fbaae761", [:mix], [], "hexpm"},
-  "elixir_make": {:hex, :elixir_make, "0.4.2", "332c649d08c18bc1ecc73b1befc68c647136de4f340b548844efc796405743bf", [:mix], [], "hexpm"},
-  "ex_doc": {:hex, :ex_doc, "0.18.3", "f4b0e4a2ec6f333dccf761838a4b253d75e11f714b85ae271c9ae361367897b7", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm"},
-  "file_system": {:hex, :file_system, "0.2.5", "a3060f063b116daf56c044c273f65202e36f75ec42e678dc10653056d3366054", [:mix], [], "hexpm"},
-  "mix_test_watch": {:hex, :mix_test_watch, "0.6.0", "5e206ed04860555a455de2983937efd3ce79f42bd8536fc6b900cc286f5bb830", [:mix], [{:file_system, "~> 0.2.1 or ~> 0.3", [hex: :file_system, repo: "hexpm", optional: false]}], "hexpm"},
+  "earmark": {:hex, :earmark, "1.2.5", "4d21980d5d2862a2e13ec3c49ad9ad783ffc7ca5769cf6ff891a4553fbaae761", [:mix], [], "hexpm", "c57508ddad47dfb8038ca6de1e616e66e9b87313220ac5d9817bc4a4dc2257b9"},
+  "elixir_make": {:hex, :elixir_make, "0.4.2", "332c649d08c18bc1ecc73b1befc68c647136de4f340b548844efc796405743bf", [:mix], [], "hexpm", "727834332ec92c69d91d1111f2de8519b459bce6730db2c0e0c2f46c7fd29374"},
+  "ex_doc": {:hex, :ex_doc, "0.18.3", "f4b0e4a2ec6f333dccf761838a4b253d75e11f714b85ae271c9ae361367897b7", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm", "33d7b70d87d45ed899180fb0413fb77c7c48843188516e15747e00fdecf572b6"},
+  "file_system": {:hex, :file_system, "0.2.5", "a3060f063b116daf56c044c273f65202e36f75ec42e678dc10653056d3366054", [:mix], [], "hexpm", "c11255c9af50d831a09d469533b9dbb0fcfe4586ef6681f2205ad0e29cda89ef"},
+  "mix_test_watch": {:hex, :mix_test_watch, "0.6.0", "5e206ed04860555a455de2983937efd3ce79f42bd8536fc6b900cc286f5bb830", [:mix], [{:file_system, "~> 0.2.1 or ~> 0.3", [hex: :file_system, repo: "hexpm", optional: false]}], "hexpm", "ea6f2a3766f18c2f53ca5b2d40b623ce2831c1646f36ff2b608607e20fc6c63c"},
   "nanovg": {:git, "https://github.com/memononen/nanovg.git", "6fa3b3d51981ef696a2deb63fe50e1d9d62ff6a9", [tag: "6fa3b3d"]},
 }

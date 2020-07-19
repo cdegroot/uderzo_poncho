@@ -6,7 +6,7 @@ endif
 
 # Set Erlang-specific compile and linker flags
 ERL_CFLAGS ?= -I$(ERL_EI_INCLUDE_DIR)
-ERL_LDFLAGS?= -L$(ERL_EI_LIBDIR) -lerl_interface -lei
+ERL_LDFLAGS?= -L$(ERL_EI_LIBDIR) -lei
 
 # TODO A bit of a hack, I'm probably missing something here...
 CLIXIR_DIR = _build/$(MIX_ENV)/lib/clixir/priv

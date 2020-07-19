@@ -1,3 +1,3 @@
 %{
-  "elixir_make": {:hex, :elixir_make, "0.4.2", "332c649d08c18bc1ecc73b1befc68c647136de4f340b548844efc796405743bf", [:mix], [], "hexpm"},
+  "elixir_make": {:hex, :elixir_make, "0.4.2", "332c649d08c18bc1ecc73b1befc68c647136de4f340b548844efc796405743bf", [:mix], [], "hexpm", "727834332ec92c69d91d1111f2de8519b459bce6730db2c0e0c2f46c7fd29374"},
 }
