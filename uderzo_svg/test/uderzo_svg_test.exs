@@ -16,7 +16,7 @@ defmodule UderzoSvgTest do
   """)
 
   test "converts basic SVG to C code" do
-    # Check that we got a module compiled in.
-    assert Keyword.get(__info__(:functions), :small_circle) == 0
+    # Check that we got a function compiled in.
+    assert small_circle() == :ok
   end
 end
